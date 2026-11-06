@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Heart, Menu, X, PhoneCall, Sun, Moon, MapPin, Globe, ChevronDown } from 'lucide-react';
+import { Heart, Menu, X, PhoneCall, Sun, Moon, MapPin, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { CHURCH_INFO } from '../../data/churchData';
 import { useLanguage } from '../../context/LanguageContext';
@@ -101,28 +101,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Main Navigation Bar */}
       <header className="sticky top-0 z-40 bg-sacred-cream/95 dark:bg-sacred-obsidian/95 backdrop-blur-md border-b border-stone-300 dark:border-stone-800 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-18">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-15 sm:h-16 md:h-18 gap-2">
             
-            {/* Logo & Church Title (Single Line, Never Wraps) */}
+            {/* Logo & Church Title (Auto-scaling & Never overflowing) */}
             <Link 
               to="/" 
-              className="flex items-center gap-2.5 sm:gap-3 text-left focus:outline-none group shrink-0"
+              className="flex items-center gap-2 sm:gap-3 text-left focus:outline-none group min-w-0 shrink"
             >
               {!logoError ? (
                 <img
                   src="/logo.png"
                   alt={CHURCH_INFO.name}
-                  className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0"
+                  className="w-8 h-8 sm:w-10 sm:h-10 object-contain shrink-0"
                   onError={() => setLogoError(true)}
                 />
               ) : (
-                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-stone-900 border border-stone-700 flex items-center justify-center text-sacred-gold font-serif font-black text-lg shadow-sharp-sm shrink-0">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-900 border border-stone-700 flex items-center justify-center text-sacred-gold font-serif font-black text-base sm:text-lg shadow-sharp-sm shrink-0">
                   ✝
                 </div>
               )}
-              <div className="flex flex-col justify-center">
-                <span className="font-display font-bold text-sm sm:text-[15px] md:text-base tracking-wider text-stone-900 dark:text-white uppercase leading-none whitespace-nowrap">
+              <div className="flex flex-col justify-center min-w-0">
+                <span className="font-display font-bold text-xs min-[360px]:text-[13px] min-[410px]:text-sm sm:text-[15px] md:text-base tracking-tight min-[380px]:tracking-wider text-stone-900 dark:text-white uppercase leading-none whitespace-nowrap truncate">
                   {CHURCH_INFO.name}
                 </span>
               </div>
@@ -239,31 +239,37 @@ export const Navbar: React.FC<NavbarProps> = ({
               </Link>
             </div>
 
-            {/* Mobile View Controls */}
-            <div className="flex sm:hidden items-center gap-1.5">
+            {/* Mobile View Controls (Always Visible & Symmetrical) */}
+            <div className="flex sm:hidden items-center gap-1.5 shrink-0">
+              {/* Compact Language Toggle: EN for English, తె for Telugu */}
               <button
+                type="button"
                 onClick={() => setLanguage(language === 'en' ? 'te' : 'en')}
-                className="px-2 py-1 border border-stone-300 dark:border-stone-700 text-[10px] font-bold uppercase bg-stone-100 dark:bg-stone-900 text-stone-800 dark:text-sacred-gold flex items-center gap-1"
+                className="w-8 h-8 flex items-center justify-center border border-stone-300 dark:border-stone-700 bg-stone-100 dark:bg-stone-900 text-stone-900 dark:text-sacred-gold hover:border-stone-500 font-bold text-xs tracking-wider transition-colors"
                 aria-label="Toggle language"
+                title={language === 'en' ? 'Switch to తెలుగు (తె)' : 'Switch to English (EN)'}
               >
-                <Globe className="w-3 h-3" />
-                <span>{language === 'en' ? 'తెలుగు' : 'EN'}</span>
+                {language === 'en' ? 'EN' : 'తె'}
               </button>
 
               <button
+                type="button"
                 onClick={onToggleTheme}
                 aria-label="Toggle theme"
-                className="p-1.5 border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900"
+                className="w-8 h-8 flex items-center justify-center border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 hover:border-stone-500 transition-colors"
+                title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               >
                 {isDarkMode ? <Sun className="w-4 h-4 text-sacred-gold" /> : <Moon className="w-4 h-4" />}
               </button>
 
               <button
+                type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-white bg-white dark:bg-stone-900"
+                className="w-8 h-8 flex items-center justify-center border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-white bg-white dark:bg-stone-900 hover:border-stone-500 transition-colors"
                 aria-label="Open mobile menu"
+                title="Menu"
               >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
             </div>
 
