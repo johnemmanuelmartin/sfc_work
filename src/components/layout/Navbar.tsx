@@ -101,28 +101,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Main Navigation Bar */}
       <header className="sticky top-0 z-40 bg-sacred-cream/95 dark:bg-sacred-obsidian/95 backdrop-blur-md border-b border-stone-300 dark:border-stone-800 transition-colors">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-15 sm:h-16 md:h-18 gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-18">
             
-            {/* Logo & Church Title (Auto-scaling & Never overflowing) */}
+            {/* Logo & Church Title (Single Line, Never Wraps) */}
             <Link 
               to="/" 
-              className="flex items-center gap-2 sm:gap-3 text-left focus:outline-none group min-w-0 shrink"
+              className="flex items-center gap-2.5 sm:gap-3 text-left focus:outline-none group shrink-0"
             >
               {!logoError ? (
                 <img
                   src="/logo.png"
                   alt={CHURCH_INFO.name}
-                  className="w-8 h-8 sm:w-10 sm:h-10 object-contain shrink-0"
+                  className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0"
                   onError={() => setLogoError(true)}
                 />
               ) : (
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-900 border border-stone-700 flex items-center justify-center text-sacred-gold font-serif font-black text-base sm:text-lg shadow-sharp-sm shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-stone-900 border border-stone-700 flex items-center justify-center text-sacred-gold font-serif font-black text-lg shadow-sharp-sm shrink-0">
                   ✝
                 </div>
               )}
-              <div className="flex flex-col justify-center min-w-0">
-                <span className="font-display font-bold text-xs min-[360px]:text-[13px] min-[410px]:text-sm sm:text-[15px] md:text-base tracking-tight min-[380px]:tracking-wider text-stone-900 dark:text-white uppercase leading-none whitespace-nowrap truncate">
+              <div className="flex flex-col justify-center">
+                <span className="font-display font-bold text-sm sm:text-[15px] md:text-base tracking-wider text-stone-900 dark:text-white uppercase leading-none whitespace-nowrap">
                   {CHURCH_INFO.name}
                 </span>
               </div>
