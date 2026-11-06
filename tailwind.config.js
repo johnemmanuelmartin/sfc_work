@@ -38,6 +38,9 @@ export default {
         sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
+      screens: {
+        'xs': '460px',
+      },
       boxShadow: {
         'sharp-sm': '2px 2px 0px 0px rgba(0, 0, 0, 0.9)',
         'sharp': '3px 3px 0px 0px rgba(0, 0, 0, 0.9)',
