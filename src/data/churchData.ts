@@ -1,0 +1,782 @@
+import { ChurchBranch, VideoItem, EventItem, Pastor, GalleryPhoto, Newsletter, PlaylistDef } from '../types';
+
+export const CHURCH_INFO = {
+  name: "Salem Fellowship Church",
+  shortName: "SFC",
+  tagline: "Loving God, Serving Hyderabad, Rooted in Grace",
+  taglineTe: "దేవుని ప్రేమించుచూ, హైదరాబాద్ సేవలో, కృపలో ఎదుగుచూ",
+  scriptureVerse: "“For where two or three are gathered together in my name, there am I in the midst of them.” — Matthew 18:20",
+  scriptureVerseTe: "“ఎక్కడ ఇద్దరు లేక ముగ్గురు నా నామమున కూడియుందురో అక్కడ నేను వారి మధ్యన ఉందును.” — మత్తయి 18:20",
+  foundedYear: 1996,
+  city: "Hyderabad, Telangana",
+  headquarters: "Kalyan Nagar, Hyderabad, Telangana",
+  email: "contact@salemfellowship.in",
+  emergencyPrayerPhone: "+91 98480 12345",
+  generalPhone: "+91 40 2380 9876",
+  whatsappNumber: "+919848012345",
+  youtubeChannelId: "UCr5yBJUWrX4CNIuzHUtVtJw",
+  socials: {
+    youtube: "https://youtube.com/@salemfellowshipchurch",
+    instagram: "https://instagram.com/salemfellowshipchurch",
+    facebook: "https://facebook.com/salemfellowshipchurch",
+    whatsapp: "https://chat.whatsapp.com/salemfellowshiphyd",
+  },
+  giving: {
+    upiVpa: "salemfellowship@okhdfcbank",
+    beneficiaryName: "SALEM FELLOWSHIP CHURCH TRUST",
+    bankName: "HDFC Bank Ltd.",
+    accountNumber: "50200059182741",
+    ifscCode: "HDFC0000521",
+    branch: "SR Nagar / Sanath Nagar, Hyderabad",
+    accountType: "Trust Savings / Current Account",
+  }
+};
+
+export const CHURCH_BRANCHES: ChurchBranch[] = [
+  {
+    id: "kalyan-nagar-main",
+    name: "Kalyan Nagar Branch (Main Branch)",
+    nameTe: "కళ్యాణ్ నగర్ శాఖ (ప్రధాన శాఖ)",
+    locality: "Kalyan Nagar",
+    localityTe: "కళ్యాణ్ నగర్",
+    city: "Hyderabad",
+    state: "Telangana",
+    address: "Plot No. 48, Near Community Hall, Kalyan Nagar, Vengal Rao Nagar Post",
+    addressTe: "ప్లాట్ నం. 48, కమ్యూనిటీ హాల్ దగ్గర, కళ్యాణ్ నగర్, వెంగళ్ రావు నగర్ పోస్ట్",
+    landmark: "Near Sanjeeva Reddy Nagar / Erragadda",
+    landmarkTe: "ఎస్.ఆర్. నగర్ / ఎర్రగడ్డ సమీపంలో",
+    pastorInCharge: "Pastor P. David Paul",
+    pastorInChargeTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    pastorContact: "+91 98480 12345",
+    whatsappNumber: "+919848012345",
+    email: "kalyannagar@salemfellowship.in",
+    isMainBranch: true,
+    languages: ["Telugu"],
+    googleMapsUrl: "https://maps.google.com/?q=Kalyan+Nagar+Hyderabad",
+    services: [
+      { 
+        day: "Every Sunday", 
+        dayTe: "ప్రతి ఆదివారం",
+        time: "10:00 AM – 01:00 PM", 
+        timeTe: "ఉదయం 10:00 – మధ్యాహ్నం 01:00",
+        language: "Telugu", 
+        name: "Sunday Divine Service & Worship",
+        nameTe: "ఆదివారపు సజీవ ఆరాధన మరియు వాక్య పరిచర్య"
+      },
+      { 
+        day: "Every Tuesday", 
+        dayTe: "ప్రతి మంగళవారం",
+        time: "06:00 PM – 07:00 PM", 
+        timeTe: "సాయంత్రం 06:00 – 07:00",
+        language: "Telugu", 
+        name: "Weekly In-Depth Bible Study",
+        nameTe: "వారపు లోతైన బైబిల్ అధ్యయనం",
+        isSpecial: true 
+      },
+      { 
+        day: "Every Last Saturday", 
+        dayTe: "ప్రతి నెల చివరి శనివారం",
+        time: "10:00 PM – 05:00 AM", 
+        timeTe: "రాత్రి 10:00 – ఉదయం 05:00",
+        language: "Telugu", 
+        name: "Monthly All-Night Prayer Vigil",
+        nameTe: "నెలవారీ రాత్రి ఉపవాస ప్రార్థన",
+        isSpecial: true 
+      },
+    ]
+  },
+  {
+    id: "alwyn-colony",
+    name: "Alwyn Colony Branch",
+    nameTe: "అల్విన్ కాలనీ శాఖ",
+    locality: "Alwyn Colony",
+    localityTe: "అల్విన్ కాలనీ",
+    city: "Hyderabad",
+    state: "Telangana",
+    address: "Phase 1, Main Road, Alwyn Colony, Kukatpally",
+    addressTe: "ఫేజ్ 1, మెయిన్ రోడ్, అల్విన్ కాలనీ, కూకట్‌పల్లి",
+    landmark: "Near Hanuman Temple Junction",
+    landmarkTe: "హనుమాన్ దేవాలయం జంక్షన్ వద్ద",
+    pastorInCharge: "Pastor M. Joseph Raju",
+    pastorInChargeTe: "పాస్టర్ ఎమ్. జోసెఫ్ రాజు",
+    pastorContact: "+91 98481 23456",
+    whatsappNumber: "+919848123456",
+    email: "alwyncolony@salemfellowship.in",
+    languages: ["Telugu"],
+    googleMapsUrl: "https://maps.google.com/?q=Alwyn+Colony+Kukatpally+Hyderabad",
+    services: [
+      { 
+        day: "Every Sunday", 
+        dayTe: "ప్రతి ఆదివారం",
+        time: "10:00 AM – 01:00 PM", 
+        timeTe: "ఉదయం 10:00 – మధ్యాహ్నం 01:00",
+        language: "Telugu", 
+        name: "Sunday Divine Service & Worship",
+        nameTe: "ఆదివారపు సజీవ ఆరాధన"
+      },
+      { 
+        day: "Every Last Saturday", 
+        dayTe: "ప్రతి నెల చివరి శనివారం",
+        time: "10:00 PM – 05:00 AM", 
+        timeTe: "రాత్రి 10:00 – ఉదయం 05:00",
+        language: "Telugu", 
+        name: "Monthly All-Night Prayer Vigil",
+        nameTe: "నెలవారీ రాత్రి ఉపవాస ప్రార్థన",
+        isSpecial: true 
+      },
+    ]
+  },
+  {
+    id: "vanasthalipuram",
+    name: "Vanasthalipuram Branch",
+    nameTe: "వనస్థలిపురం శాఖ",
+    locality: "Vanasthalipuram",
+    localityTe: "వనస్థలిపురం",
+    city: "Hyderabad",
+    state: "Telangana",
+    address: "H.No. 6-2-108, Phase 2, Near Rythu Bazar, Vanasthalipuram",
+    addressTe: "ఇంటి నం. 6-2-108, ఫేజ్ 2, రైతు బజార్ దగ్గర, వనస్థలిపురం",
+    landmark: "Opposite Post Office Road",
+    landmarkTe: "పోస్ట్ ఆఫీస్ రోడ్ ఎదురుగా",
+    pastorInCharge: "Pastor K. Samuel Kiran",
+    pastorInChargeTe: "పాస్టర్ కె. శామ్యూల్ కిరణ్",
+    pastorContact: "+91 98482 34567",
+    whatsappNumber: "+919848234567",
+    email: "vanasthalipuram@salemfellowship.in",
+    languages: ["Telugu"],
+    googleMapsUrl: "https://maps.google.com/?q=Vanasthalipuram+Hyderabad",
+    services: [
+      { 
+        day: "Every Sunday", 
+        dayTe: "ప్రతి ఆదివారం",
+        time: "10:00 AM – 01:00 PM", 
+        timeTe: "ఉదయం 10:00 – మధ్యాహ్నం 01:00",
+        language: "Telugu", 
+        name: "Sunday Divine Service & Worship",
+        nameTe: "ఆదివారపు సజీవ ఆరాధన"
+      },
+      { 
+        day: "Every Last Saturday", 
+        dayTe: "ప్రతి నెల చివరి శనివారం",
+        time: "10:00 PM – 05:00 AM", 
+        timeTe: "రాత్రి 10:00 – ఉదయం 05:00",
+        language: "Telugu", 
+        name: "Monthly All-Night Prayer Vigil",
+        nameTe: "నెలవారీ రాత్రి ఉపవాస ప్రార్థన",
+        isSpecial: true 
+      },
+    ]
+  },
+  {
+    id: "gachibowli",
+    name: "Gachibowli Branch",
+    nameTe: "గచ్చిబౌలి శాఖ",
+    locality: "Gachibowli",
+    localityTe: "గచ్చిబౌలి",
+    city: "Hyderabad",
+    state: "Telangana",
+    address: "Plot 19, Indira Nagar, Gachibowli",
+    addressTe: "ప్లాట్ 19, ఇందిరా నగర్, గచ్చిబౌలి",
+    landmark: "Near Telecom Nagar & Outer Ring Road",
+    landmarkTe: "టెలికాం నగర్ సమీపంలో",
+    pastorInCharge: "Pastor Ch. Joshua Kumar",
+    pastorInChargeTe: "పాస్టర్ సిహెచ్. జాషువా కుమార్",
+    pastorContact: "+91 98483 45678",
+    whatsappNumber: "+919848345678",
+    email: "gachibowli@salemfellowship.in",
+    languages: ["Telugu"],
+    googleMapsUrl: "https://maps.google.com/?q=Gachibowli+Hyderabad",
+    services: [
+      { 
+        day: "Every Sunday", 
+        dayTe: "ప్రతి ఆదివారం",
+        time: "10:00 AM – 01:00 PM", 
+        timeTe: "ఉదయం 10:00 – మధ్యాహ్నం 01:00",
+        language: "Telugu", 
+        name: "Sunday Divine Service & Worship",
+        nameTe: "ఆదివారపు సజీవ ఆరాధన"
+      },
+      { 
+        day: "Every Last Saturday", 
+        dayTe: "ప్రతి నెల చివరి శనివారం",
+        time: "10:00 PM – 05:00 AM", 
+        timeTe: "రాత్రి 10:00 – ఉదయం 05:00",
+        language: "Telugu", 
+        name: "Monthly All-Night Prayer Vigil",
+        nameTe: "నెలవారీ రాత్రి ఉపవాస ప్రార్థన",
+        isSpecial: true 
+      },
+    ]
+  },
+  {
+    id: "paatigadda",
+    name: "Paatigadda Branch",
+    nameTe: "పాటిగడ్డ శాఖ",
+    locality: "Paatigadda",
+    localityTe: "పాటిగడ్డ",
+    city: "Hyderabad",
+    state: "Telangana",
+    address: "Line 3, Paatigadda, Prakash Nagar, Begumpet",
+    addressTe: "లైన్ 3, పాటిగడ్డ, ప్రకాష్ నగర్, బేగంపేట్",
+    landmark: "Near Old Airport Road / Begumpet",
+    landmarkTe: "పాత ఎయిర్‌పోర్ట్ రోడ్ సమీపంలో",
+    pastorInCharge: "Pastor B. Anand Rao",
+    pastorInChargeTe: "పాస్టర్ బి. ఆనంద్ రావు",
+    pastorContact: "+91 98484 56789",
+    whatsappNumber: "+919848456789",
+    email: "paatigadda@salemfellowship.in",
+    languages: ["Telugu"],
+    googleMapsUrl: "https://maps.google.com/?q=Paatigadda+Begumpet+Hyderabad",
+    services: [
+      { 
+        day: "Every Sunday", 
+        dayTe: "ప్రతి ఆదివారం",
+        time: "10:00 AM – 01:00 PM", 
+        timeTe: "ఉదయం 10:00 – మధ్యాహ్నం 01:00",
+        language: "Telugu", 
+        name: "Sunday Divine Service & Worship",
+        nameTe: "ఆదివారపు సజీవ ఆరాధన"
+      },
+      { 
+        day: "Every Last Saturday", 
+        dayTe: "ప్రతి నెల చివరి శనివారం",
+        time: "10:00 PM – 05:00 AM", 
+        timeTe: "రాత్రి 10:00 – ఉదయం 05:00",
+        language: "Telugu", 
+        name: "Monthly All-Night Prayer Vigil",
+        nameTe: "నెలవారీ రాత్రి ఉపవాస ప్రార్థన",
+        isSpecial: true 
+      },
+    ]
+  },
+  {
+    id: "prem-nagar",
+    name: "Prem Nagar Branch",
+    nameTe: "ప్రేమ్ నగర్ శాఖ",
+    locality: "Prem Nagar",
+    localityTe: "ప్రేమ్ నగర్",
+    city: "Hyderabad",
+    state: "Telangana",
+    address: "Road No. 2, Prem Nagar, Near Hafeezpet / Erragadda",
+    addressTe: "రోడ్ నం. 2, ప్రేమ్ నగర్, హఫీజ్‌పేట్ / ఎర్రగడ్డ సమీపంలో",
+    landmark: "Near Railway Crossing",
+    landmarkTe: "రైల్వే క్రాసింగ్ సమీపంలో",
+    pastorInCharge: "Pastor T. Timothy Stephen",
+    pastorInChargeTe: "పాస్టర్ టి. తిమోతి స్టీఫెన్",
+    pastorContact: "+91 98485 67890",
+    whatsappNumber: "+919848567890",
+    email: "premnagar@salemfellowship.in",
+    languages: ["Telugu"],
+    googleMapsUrl: "https://maps.google.com/?q=Prem+Nagar+Hyderabad",
+    services: [
+      { 
+        day: "Every Sunday", 
+        dayTe: "ప్రతి ఆదివారం",
+        time: "10:00 AM – 01:00 PM", 
+        timeTe: "ఉదయం 10:00 – మధ్యాహ్నం 01:00",
+        language: "Telugu", 
+        name: "Sunday Divine Service & Worship",
+        nameTe: "ఆదివారపు సజీవ ఆరాధన"
+      },
+      { 
+        day: "Every Last Saturday", 
+        dayTe: "ప్రతి నెల చివరి శనివారం",
+        time: "10:00 PM – 05:00 AM", 
+        timeTe: "రాత్రి 10:00 – ఉదయం 05:00",
+        language: "Telugu", 
+        name: "Monthly All-Night Prayer Vigil",
+        nameTe: "నెలవారీ రాత్రి ఉపవాస ప్రార్థన",
+        isSpecial: true 
+      },
+    ]
+  }
+];
+
+export const DEFAULT_PLAYLISTS: PlaylistDef[] = [
+  { id: 'all', nameEn: 'All Videos', nameTe: 'అన్ని వీడియోలు' },
+  { id: 'locked_in_with_god', nameEn: 'Locked - In With God', nameTe: 'లాక్డ్ - ఇన్ విత్ గాడ్' },
+  { id: 'sermons', nameEn: 'Sunday Sermons', nameTe: 'ఆదివారపు వాక్యములు' },
+  { id: 'bible_study', nameEn: 'Tuesday Bible Study', nameTe: 'మంగళవారం బైబిల్ స్టడీ' },
+  { id: 'worship', nameEn: 'Telugu Worship', nameTe: 'తెలుగు ఆరాధన' },
+  { id: 'special', nameEn: 'All-Night Prayer', nameTe: 'రాత్రి ప్రార్థనలు' },
+  { id: 'youth', nameEn: 'Youth Fellowship', nameTe: 'యూత్ కూటములు' },
+];
+
+export const FEATURED_LIVESTREAM: VideoItem = {
+  id: "live-current",
+  title: "Salem Fellowship Church — Sunday Live Stream",
+  titleTe: "సేలెం ఫెలోషిప్ చర్చి — ఆదివారపు ప్రత్యక్ష ప్రసారం",
+  teluguTitle: "ఆదివారపు ప్రత్యక్ష ప్రసారం",
+  youtubeId: "live_stream", // Uses channel live stream embed URL
+  category: "all",
+  speaker: "Pastor P. David Paul",
+  speakerTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+  date: "Sunday Live (10:00 AM – 01:00 PM IST)",
+  dateTe: "ఆదివారం ప్రత్యక్ష ప్రసారం (10:00 AM – 1:00 PM)",
+  duration: "3 hours",
+  language: "Telugu",
+  series: "Sunday Liturgy",
+  seriesTe: "ఆదివారపు ఆరాధన",
+  scriptureRef: "Hebrews 11",
+  isLiveStream: true,
+  description: "Live broadcast from Salem Fellowship Church. Telugu worship, intercessory prayer, and expository sermon from the Word of God.",
+  descriptionTe: "సేలెం ఫెలోషిప్ చర్చి నుండి ప్రత్యక్ష ప్రసారం. దేవుని వాక్య పరిచర్య, విజ్ఞాపన ప్రార్థనలు మరియు సజీవ ఆరాధన."
+};
+
+export const ARCHIVED_VIDEOS: VideoItem[] = [
+  {
+    id: "locked-in-15",
+    title: "LOCKED - IN WITH GOD | Session 15",
+    titleTe: "లాక్డ్ - ఇన్ విత్ గాడ్ | సెషన్ 15",
+    teluguTitle: "లాక్డ్ - ఇన్ విత్ గాడ్ | సెషన్ 15",
+    youtubeId: "dQw4w9WgXcQ",
+    category: "locked_in_with_god",
+    speaker: "Pastor P. David Paul",
+    speakerTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    date: "Online Devotional Series",
+    dateTe: "ప్రత్యేక వాక్య శ్రేణి",
+    duration: "45 mins",
+    language: "Telugu",
+    series: "LOCKED - IN WITH GOD",
+    seriesTe: "లాక్డ్ - ఇన్ విత్ గాడ్",
+    scriptureRef: "Psalm 91:1-16",
+    description: "Session 15 of the spiritual online devotional series 'LOCKED - IN WITH GOD' focusing on abiding under the shadow of the Almighty.",
+    descriptionTe: "మహోన్నతుని చాటున నివసించుట మరియు దేవుని ఆశ్రయములో భద్రతను గూర్చిన 15వ భాగం."
+  },
+  {
+    id: "locked-in-14",
+    title: "LOCKED - IN WITH GOD | Session 14",
+    titleTe: "లాక్డ్ - ఇన్ విత్ గాడ్ | సెషన్ 14",
+    teluguTitle: "లాక్డ్ - ఇన్ విత్ గాడ్ | సెషన్ 14",
+    youtubeId: "1y_fl8fTjH4",
+    category: "locked_in_with_god",
+    speaker: "Pastor P. David Paul",
+    speakerTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    date: "Online Devotional Series",
+    dateTe: "ప్రత్యేక వాక్య శ్రేణి",
+    duration: "42 mins",
+    language: "Telugu",
+    series: "LOCKED - IN WITH GOD",
+    seriesTe: "లాక్డ్ - ఇన్ విత్ గాడ్",
+    scriptureRef: "Isaiah 40:28-31",
+    description: "Session 14: Renewing spiritual strength in times of testing and isolation through secret prayer.",
+    descriptionTe: "రహస్య ప్రార్థన ద్వారా ఆత్మీయ బలమును నూతనపరచుకొనుట గూర్చిన సందేశం."
+  },
+  {
+    id: "locked-in-13",
+    title: "LOCKED - IN WITH GOD | Session 13",
+    titleTe: "లాక్డ్ - ఇన్ విత్ గాడ్ | సెషన్ 13",
+    teluguTitle: "లాక్డ్ - ఇన్ విత్ గాడ్ | సెషన్ 13",
+    youtubeId: "kJQP7kiw5Fk",
+    category: "locked_in_with_god",
+    speaker: "Pastor P. David Paul",
+    speakerTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    date: "Online Devotional Series",
+    dateTe: "ప్రత్యేక వాక్య శ్రేణి",
+    duration: "40 mins",
+    language: "Telugu",
+    series: "LOCKED - IN WITH GOD",
+    seriesTe: "లాక్డ్ - ఇన్ విత్ గాడ్",
+    scriptureRef: "Philippians 4:6-7",
+    description: "Session 13: Overcoming anxiety with peace that transcends all human understanding.",
+    descriptionTe: "సమస్త జ్ఞానమునకు మించిన దేవుని సమాధానము హృదయమును కాపాడునను వాక్య ధ్యానం."
+  },
+  {
+    id: "vid-sermon-1",
+    title: "The Covenant Faithfulness of God | Sunday Divine Service",
+    titleTe: "దేవుని నిబంధన మరియు నమ్మకత్వము | ఆదివారం ఆరాధన",
+    teluguTitle: "దేవుని నిబంధన మరియు నమ్మకత్వము",
+    youtubeId: "9bZkp7q19f0",
+    category: "all",
+    speaker: "Pastor P. David Paul",
+    speakerTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    date: "Sunday 10 AM",
+    dateTe: "ఆదివారం ఉదయం 10",
+    duration: "1h 15m",
+    language: "Telugu",
+    series: "Sunday Liturgy",
+    seriesTe: "ఆదివారపు వాక్యము",
+    scriptureRef: "Deuteronomy 7:9",
+    description: "Sunday service message from Kalyan Nagar Main Branch reminding believers of God's unchanging promises.",
+    descriptionTe: "కళ్యాణ్ నగర్ ప్రధాన శాఖ నుండి దేవుని వాక్య సందేశం."
+  },
+  {
+    id: "vid-bible-study-1",
+    title: "Tuesday In-Depth Bible Study: Romans Chapter 8",
+    titleTe: "మంగళవారం బైబిల్ స్టడీ: రోమీయులకు 8వ అధ్యాయము",
+    teluguTitle: "రోమీయులకు 8వ అధ్యాయము",
+    youtubeId: "L_LUpnjgPso",
+    category: "all",
+    speaker: "Pastor P. David Paul",
+    speakerTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    date: "Tuesday 6:00 – 7:00 PM",
+    dateTe: "మంగళవారం సాయంత్రం 6 – 7",
+    duration: "1 hour",
+    language: "Telugu",
+    series: "Romans Verse-by-Verse",
+    seriesTe: "రోమీయులకు పత్రిక ధ్యానం",
+    scriptureRef: "Romans 8:1-39",
+    description: "Weekly systematic Bible study at Kalyan Nagar delving into no condemnation in Christ and more than conquerors.",
+    descriptionTe: "కళ్యాణ్ నగర్ ప్రధాన మందిరంలో జరిగిన వచన వచన వాక్య పరిశీలన."
+  },
+  {
+    id: "vid-night-prayer-1",
+    title: "Monthly All-Night Prayer Vigil | City-Wide Intercession",
+    titleTe: "నెల చివరి శనివారం రాత్రి ప్రార్థన | విజ్ఞాపన కూటం",
+    teluguTitle: "నెల చివరి శనివారం రాత్రి ప్రార్థన",
+    youtubeId: "fJ9rUzIMcZQ",
+    category: "all",
+    speaker: "Branch Pastors",
+    speakerTe: "శాఖా కాపరులు",
+    date: "Last Saturday Night",
+    dateTe: "నెల చివరి శనివారం రాత్రి",
+    duration: "2h 30m",
+    language: "Telugu",
+    series: "All-Night Vigil",
+    seriesTe: "రాత్రి ప్రార్థన",
+    scriptureRef: "Jeremiah 33:3",
+    description: "All-night prayer gathering held across all 6 branches interceding for families and revival.",
+    descriptionTe: "మన అన్ని శాఖలలో రాత్రంతా కొనసాగిన విజ్ఞాపన మరియు స్వస్థత ప్రార్థనలు."
+  }
+];
+
+export const UPCOMING_EVENTS: EventItem[] = [
+  {
+    id: "ev-1",
+    title: "Monthly All-Night Prayer Vigil",
+    titleTe: "నెల చివరి శనివారం రాత్రి ఉపవాస ప్రార్థన",
+    subtitle: "Conducted Across All 6 Hyderabad Branches",
+    subtitleTe: "అన్ని 6 శాఖలలో ఏకరీతిగా నిర్వహించబడుతుంది",
+    date: "Every Last Saturday of the Month",
+    dateTe: "ప్రతి నెల చివరి శనివారం",
+    time: "10:00 PM – 05:00 AM",
+    timeTe: "రాత్రి 10:00 – ఉదయం 05:00",
+    venue: "At All 6 Church Branches in Hyderabad",
+    venueTe: "అన్ని శాఖల ప్రార్థనా మందిరాలలో",
+    branchArea: "All Branches",
+    branchAreaTe: "అన్ని బ్రాంచీలు",
+    category: "All-Night Prayer",
+    speaker: "Pastoral Presbytery Council",
+    speakerTe: "అన్ని శాఖల సేవకులు",
+    description: "An intensive overnight prayer watch praying for families, health breakthroughs, deliverance, and spiritual revival across Hyderabad.",
+    descriptionTe: "కుటుంబ రక్షణ, రోగాల నుండి విడుదల, విశ్వాసుల ఆత్మీయ బలము మరియు హైదరాబాద్ నగరం కొరకు సంయుక్త రాత్రి విజ్ఞాపన ప్రార్థన.",
+    badge: "All 6 Branches",
+    badgeTe: "అన్ని 6 బ్రాంచీలు",
+    isUpcoming: true
+  },
+  {
+    id: "ev-2",
+    title: "Weekly In-Depth Bible Study",
+    titleTe: "వారపు లోతైన బైబిల్ అధ్యయనం",
+    subtitle: "Kalyan Nagar Main Branch Exclusive",
+    subtitleTe: "కళ్యాణ్ నగర్ ప్రధాన శాఖ",
+    date: "Every Tuesday Evening",
+    dateTe: "ప్రతి మంగళవారం సాయంత్రం",
+    time: "06:00 PM – 07:00 PM IST",
+    timeTe: "సాయంత్రం 06:00 – 07:00",
+    venue: "Kalyan Nagar Main Branch Sanctuary",
+    venueTe: "కళ్యాణ్ నగర్ ప్రధాన మందిరము",
+    branchArea: "Kalyan Nagar",
+    branchAreaTe: "కళ్యాణ్ నగర్",
+    category: "Bible Study",
+    speaker: "Pastor P. David Paul",
+    speakerTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    description: "Verse-by-verse scriptural examination, doctrine clarification, and spiritual edification for all believers.",
+    descriptionTe: "వాక్యమును వచన వచనముగా పరిశోధించి నేర్చుకొను సమయం. సందేహాల నివృత్తి మరియు వాక్య ధ్యానము.",
+    badge: "Every Tuesday 6-7 PM",
+    badgeTe: "ప్రతి మంగళవారం 6-7 PM",
+    isUpcoming: true
+  },
+  {
+    id: "ev-3",
+    title: "Sunday Divine Service & Worship",
+    titleTe: "ఆదివారపు సజీవ ఆరాధన",
+    subtitle: "10:00 AM to 01:00 PM (3 Hours of Telugu Ministry)",
+    subtitleTe: "ఉదయం 10:00 నుండి మధ్యాహ్నం 1:00 గంట వరకు",
+    date: "Every Sunday Morning",
+    dateTe: "ప్రతి ఆదివారం",
+    time: "10:00 AM – 01:00 PM IST",
+    timeTe: "ఉదయం 10:00 – మధ్యాహ్నం 01:00",
+    venue: "Kalyan Nagar, Alwyn, Vanasthalipuram, Gachibowli, Paatigadda, Prem Nagar",
+    venueTe: "కళ్యాణ్ నగర్, అల్విన్ కాలనీ, వనస్థలిపురం, గచ్చిబౌలి, పాటిగడ్డ, ప్రేమ్ నగర్",
+    branchArea: "All Branches",
+    branchAreaTe: "అన్ని బ్రాంచీలు",
+    category: "Worship",
+    speaker: "Respective Branch Pastors",
+    speakerTe: "ఆయా శాఖల పాస్టర్లు",
+    description: "Weekly Telugu divine worship with hymns, intercession, pastoral preaching, and fellowship.",
+    descriptionTe: "పాటలు, స్తుతి ఆరాధన, దేవుని వాక్య ఉపదేశం మరియు సహవాసము. అన్ని శాఖలలో సమయ పాలన ఏకరీతిగా ఉండును.",
+    badge: "Every Sunday 10 AM - 1 PM",
+    badgeTe: "ప్రతి ఆదివారం 10 AM - 1 PM",
+    isUpcoming: true
+  },
+  {
+    id: "ev-4",
+    title: "Annual Gospel Revival Convocations",
+    titleTe: "వార్షిక సువార్త మరియు స్వస్థత సభలు",
+    subtitle: "Salem Fellowship Church Annual Revival Meetings",
+    subtitleTe: "సేలెం ఫెలోషిప్ చర్చి వార్షిక కూటములు",
+    date: "December 2026",
+    dateTe: "డిసెంబర్ 2026",
+    time: "06:30 PM – 09:30 PM",
+    timeTe: "సాయంత్రం 06:30 – 09:30",
+    venue: "Central Hall / Grounds, Kalyan Nagar, Hyderabad",
+    venueTe: "కళ్యాణ్ నగర్ మైదానం / సెంట్రల్ హాల్, హైదరాబాద్",
+    branchArea: "Hyderabad Central",
+    branchAreaTe: "హైదరాబాద్ సెంట్రల్",
+    category: "Convention",
+    description: "Three evenings of combined worship, powerful gospel proclamation, and intercession for Hyderabad.",
+    descriptionTe: "మూడు రోజుల పాటు నిర్వహించబడే వార్షిక ఆధ్యాత్మిక సభలు. దేవుని దాసుల చేత బలమైన వాక్య సందేశాలు.",
+    badge: "Annual Convocations",
+    badgeTe: "వార్షిక సభలు",
+    isUpcoming: true
+  }
+];
+
+export const LEADERSHIP_TEAM: Pastor[] = [
+  {
+    id: "pastor-david",
+    name: "Pastor P. David Paul",
+    nameTe: "పాస్టర్ పి. డేవిడ్ పాల్",
+    role: "Senior Pastor & Founder",
+    roleTe: "సీనియర్ పాస్టర్ & వ్యవస్థాపకులు",
+    title: "Senior Minister — Kalyan Nagar (Main Branch)",
+    titleTe: "కళ్యాణ్ నగర్ ప్రధాన శాఖ కాపరి",
+    bio: "Serving God faithfully in Hyderabad since 1996. Oversees the Kalyan Nagar main branch and coordinates the spiritual growth across all 6 Hyderabad branches.",
+    bioTe: "1996 నుండి హైదరాబాద్ నగరంలో దేవుని పరిచర్యను నమ్మకంగా కొనసాగిస్తున్నారు. కళ్యాణ్ నగర్ ప్రధాన శాఖతో పాటు అన్ని బ్రాంచీలకు ఆత్మీయ పర్యవేక్షకులుగా ఉన్నారు.",
+    imageUrl: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80",
+    branch: "Kalyan Nagar (Main Branch)",
+    branchTe: "కళ్యాణ్ నగర్ (ప్రధాన శాఖ)",
+    counselingDays: "Tuesdays & Thursdays (5:00 PM - 8:00 PM)",
+    counselingDaysTe: "మంగళవారం మరియు గురువారం (సాయంత్రం 5 నుండి 8)",
+    quote: "“God's Word is a lamp unto our feet and a light unto our path. Stand steadfast in prayer.”",
+    quoteTe: "“దేవుని వాక్యమే మన పాదములకు దీపము, మన త్రోవకు వెలుగు. నమ్మకంగా ప్రార్థనలో నిలబడండి.”"
+  },
+  {
+    id: "pastor-joseph",
+    name: "Pastor M. Joseph Raju",
+    nameTe: "పాస్టర్ ఎమ్. జోసెఫ్ రాజు",
+    role: "Branch Pastor",
+    roleTe: "శాఖా కాపరి",
+    title: "Branch Pastor — Alwyn Colony",
+    titleTe: "అల్విన్ కాలనీ శాఖా కాపరి",
+    bio: "Shepherding the flock in Alwyn Colony and Kukatpally, leading house visits, prayer fellowships, and pastoral counseling.",
+    bioTe: "అల్విన్ కాలనీ మరియు కూకట్‌పల్లి పరిసర ప్రాంతాల విశ్వాసులను వాక్యములో బలపరుస్తూ, గృహ సందర్శనలు మరియు ప్రార్థన కూటములు నడిపిస్తున్నారు.",
+    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+    branch: "Alwyn Colony",
+    branchTe: "అల్విన్ కాలనీ",
+    counselingDays: "Wednesdays & Fridays",
+    counselingDaysTe: "బుధవారం మరియు శుక్రవారం",
+    quote: "“Our vision is that every believer in Salem Fellowship becomes a person of persistent prayer.”",
+    quoteTe: "“ప్రతి విశ్వాసి ప్రార్థనాపరుడు కావాలన్నదే మన సేలెం ఫెలోషిప్ ఆశయం.”"
+  },
+  {
+    id: "pastor-samuel",
+    name: "Pastor K. Samuel Kiran",
+    nameTe: "పాస్టర్ కె. శామ్యూల్ కిరణ్",
+    role: "Branch Pastor",
+    roleTe: "శాఖా కాపరి",
+    title: "Branch Pastor — Vanasthalipuram",
+    titleTe: "వనస్థలిపురం శాఖా కాపరి",
+    bio: "Guiding the church community in Vanasthalipuram, mentoring youth, and organizing monthly all-night prayer gatherings.",
+    bioTe: "వనస్థలిపురం శాఖలో సేవా బాధ్యతలు నిర్వర్తిస్తూ, యవ్వనస్థుల కూటములు మరియు ఉపవాస ప్రార్థనలను శ్రద్ధతో పర్యవేక్షిస్తున్నారు.",
+    imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+    branch: "Vanasthalipuram",
+    branchTe: "వనస్థలిపురం",
+    counselingDays: "Mondays & Saturdays",
+    counselingDaysTe: "సోమవారం మరియు శనివారం",
+    quote: "“Those who trust in the Lord in difficult seasons will never be put to shame.”",
+    quoteTe: "“కష్ట కాలంలో ప్రభువుపై ఆధారపడిన వారికి ఎన్నడూ నిరాశ కలగదు.”"
+  },
+  {
+    id: "pastor-joshua",
+    name: "Pastor Ch. Joshua Kumar",
+    nameTe: "పాస్టర్ సిహెచ్. జాషువా కుమార్",
+    role: "Branch Pastor",
+    roleTe: "శాఖా కాపరి",
+    title: "Branch Pastor — Gachibowli",
+    titleTe: "గచ్చిబౌలి శాఖా కాపరి",
+    bio: "Ministering to corporate professionals, students, and families in Gachibowli and the IT corridor.",
+    bioTe: "గచ్చిబౌలి మరియు హైటెక్ సిటీ ప్రాంతాలలో ఉద్యోగులు మరియు కుటుంబాలను కలుస్తూ, క్రైస్తవ విలువలను తెలియజేస్తున్నారు.",
+    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80",
+    branch: "Gachibowli",
+    branchTe: "గచ్చిబౌలి",
+    counselingDays: "Thursdays & Saturdays",
+    counselingDaysTe: "గురువారం మరియు శనివారం",
+    quote: "“Demonstrating Christ's unconditional love through our everyday lives.”",
+    quoteTe: "“దేవుని ప్రేమను మన జీవితాల ద్వారా సమాజానికి చూపించాలి.”"
+  }
+];
+
+export const GALLERY_PHOTOS: GalleryPhoto[] = [
+  {
+    id: "gal-1",
+    title: "Sunday Divine Service & Communion",
+    titleTe: "ఆదివారపు సజీవ ఆరాధన",
+    category: "Worship",
+    imageUrl: "https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=800&q=80",
+    date: "Sunday 10 AM",
+    caption: "Congregation lifting voices in worship at Kalyan Nagar Main Branch (10 AM to 1 PM).",
+    captionTe: "కళ్యాణ్ నగర్ ప్రధాన శాఖలో 10 AM నుండి 1 PM వరకు జరిగిన సజీవ ఆరాధన."
+  },
+  {
+    id: "gal-2",
+    title: "Monthly All-Night Prayer Vigil",
+    titleTe: "నెల చివరి శనివారం రాత్రి ప్రార్థన",
+    category: "All-Night Prayer",
+    imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80",
+    date: "Last Saturday",
+    caption: "Believers united in intense intercession across all branches in Hyderabad.",
+    captionTe: "అల్విన్ కాలనీ మరియు పాటిగడ్డ శాఖలలో రాత్రి ప్రార్థనలో పాల్గొన్న విశ్వాసులు."
+  },
+  {
+    id: "gal-3",
+    title: "Water Baptism Celebration",
+    titleTe: "నీటి బాప్తిస్మ కూటం",
+    category: "Baptism",
+    imageUrl: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80",
+    date: "Baptism Service",
+    caption: "New disciples publicly testifying their salvation in Christ Jesus.",
+    captionTe: "హైదరాబాద్ బ్రాంచీలలో నూతనంగా ప్రభువును అంగీకరించిన విశ్వాసుల బాప్తిస్మం."
+  },
+  {
+    id: "gal-4",
+    title: "Community Outreach & Relief",
+    titleTe: "పేదలకు నిత్యావసర వస్తువుల పంపిణీ",
+    category: "Outreach",
+    imageUrl: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
+    date: "Community Support",
+    caption: "Providing dry rations and care for underprivileged families in Prem Nagar and Paatigadda.",
+    captionTe: "ప్రేమ్ నగర్ మరియు పాటిగడ్డ ప్రాంతాలలో పేద కుటుంబాలకు నిత్యావసర సరుకుల సహాయం."
+  },
+  {
+    id: "gal-5",
+    title: "SFC Youth Gathering",
+    titleTe: "యవ్వనస్థుల కూటం",
+    category: "Youth",
+    imageUrl: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=800&q=80",
+    date: "Youth Meet",
+    caption: "Young believers worshiping and learning leadership virtues.",
+    captionTe: "హైదరాబాద్ బ్రాంచీల యవ్వనస్థులు కలసి దేవుని స్తుతించిన దృశ్యం."
+  },
+  {
+    id: "gal-6",
+    title: "Tuesday In-Depth Bible Study Fellowship",
+    titleTe: "మంగళవారం బైబిల్ స్టడీ",
+    category: "Worship",
+    imageUrl: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80",
+    date: "Tuesday 6 PM",
+    caption: "Kalyan Nagar Main Branch fellowship meditating on the scriptures.",
+    captionTe: "కళ్యాణ్ నగర్ మందిరంలో సాయంత్రం 6 నుండి 7 గంటల వరకు వాక్య ధ్యానం."
+  }
+];
+
+export const NEWSLETTERS: Newsletter[] = [
+  {
+    id: "nl-nov-2026",
+    title: "Salem Monthly Bulletin — November 2026",
+    titleTe: "సేలెం వర్తమాన పత్రిక — నవంబర్ 2026",
+    edition: "Vol. 28, Issue 11",
+    editionTe: "సంపుటి 28, సంచిక 11",
+    monthYear: "November 2026",
+    monthYearTe: "నవంబర్ 2026",
+    themeVerse: "“The fear of the Lord is the beginning of wisdom.” — Proverbs 9:10",
+    themeVerseTe: "“యెహోవా యందు భయభక్తులు కలిగియుండుట జ్ఞానమునకు మూలము.” — సామెతలు 9:10",
+    summary: "Pastoral letter from Pastor P. David Paul, Tuesday Bible study highlights on Romans, all-night prayer testimonies, and branch schedule updates.",
+    summaryTe: "పాస్టర్ గారి సందేశం, మంగళవారం బైబిల్ స్టడీ ముఖ్యాంశాలు, రాత్రి ప్రార్థన సాక్ష్యాలు మరియు హైదరాబాద్ బ్రాంచీల వివరాలు.",
+    topics: ["Pastoral Letter", "Tuesday Bible Study Notes", "Night Prayer Testimonies", "Branch Service Timetable"],
+    topicsTe: ["పాస్టర్ గారి లేఖ", "మంగళవారం బైబిల్ స్టడీ గైడ్", "ఆల్-నైట్ ప్రార్థన సాక్ష్యాలు", "బ్రాంచ్ కూటముల సమయాలు"]
+  },
+  {
+    id: "nl-oct-2026",
+    title: "Salem Monthly Bulletin — October 2026",
+    titleTe: "సేలెం వర్తమాన పత్రిక — అక్టోబర్ 2026",
+    edition: "Vol. 28, Issue 10",
+    editionTe: "సంపుటి 28, సంచిక 10",
+    monthYear: "October 2026",
+    monthYearTe: "అక్టోబర్ 2026",
+    themeVerse: "“Rejoice in the Lord always.” — Philippians 4:4",
+    themeVerseTe: "“ప్రభువు నందు ఎల్లప్పుడును ఆనందించుడి.” — ఫిలిప్పీయులకు 4:4",
+    summary: "Growth report of Vanasthalipuram and Gachibowli branches, biblical financial stewardship, and youth camp announcements.",
+    summaryTe: "వనస్థలిపురం మరియు గచ్చిబౌలి బ్రాంచ్ అభివృద్ధి నివేదికలు, దశమభాగము మరియు కానుకల ఆశీర్వాదములు.",
+    topics: ["Power of Family Prayer", "Tithes & Offerings Blessings", "Bible Quiz"],
+    topicsTe: ["కుటుంబ ప్రార్థనల ప్రాముఖ్యత", "దశమభాగం మరియు కానుకలు", "బైబిల్ క్విజ్ ప్రశ్నలు"]
+  }
+];
+
+export const STATEMENT_OF_FAITH = [
+  {
+    doctrine: "The Holy Scriptures",
+    doctrineTe: "పరిశుద్ధ బైబిల్ గ్రంథం (The Holy Scriptures)",
+    summary: "We believe the 66 books of the Old and New Testaments to be the inspired, infallible, and authoritative Word of God, serving as the sole guide for faith and life.",
+    summaryTe: "పరిశుద్ధ గ్రంథములోని 66 పుస్తకములు దైవ ప్రేరేపణ వలన కలిగినవనియు, విశ్వాసమునకు మరియు క్రైస్తవ జీవిత నడవడికకు ఏకైక ప్రామాణికమని మేము సంపూర్ణంగా విశ్వసిస్తున్నాము."
+  },
+  {
+    doctrine: "The Triune God",
+    doctrineTe: "త్రిత్వ దేవుడు (The Triune God)",
+    summary: "We believe in one God, eternally existent in three co-equal persons: Father, Son, and Holy Spirit — the Creator and Sustainer of the universe.",
+    summaryTe: "తండ్రి, కుమార, పరిశుద్ధాత్మ అను త్రిత్వములో ఒక్కడే సత్య దేవుడు నిత్యత్వంలో ఉన్నాడని, ఆయనే సర్వసృష్టికర్త అని నమ్ముతున్నాము."
+  },
+  {
+    doctrine: "The Lord Jesus Christ",
+    doctrineTe: "యేసు క్రీస్తు ప్రభువు (The Lord Jesus Christ)",
+    summary: "We confess the full deity and true humanity of Jesus Christ, His virgin birth, His sinless life, His atoning death on the Cross, and His bodily resurrection.",
+    summaryTe: "యేసు క్రీస్తు కన్యక మరియకు జన్మించి, పాపరహితుడై జీవించి, మన పాపముల నిమిత్తము సిలువపై మరణించి, మూడవ దినమున పునరుత్థానుడై తిరిగి లేచాడని విశ్వసిస్తున్నాము."
+  },
+  {
+    doctrine: "Salvation by Grace through Faith",
+    doctrineTe: "కృప ద్వారా రక్షణ (Salvation by Grace)",
+    summary: "Salvation is the gift of God received through repentance toward God and faith in Jesus Christ, apart from human merit or ritual works.",
+    summaryTe: "మన క్రియల వలన కాక, యేసు క్రీస్తు నందలి విశ్వాసము ద్వారా మరియు పశ్చాత్తాపము వలన మాత్రమే పాపక్షమాపణ మరియు రక్షణ లభించును."
+  },
+  {
+    doctrine: "The Ministry of the Holy Spirit",
+    doctrineTe: "పరిశుద్ధాత్ముని కార్యము (Holy Spirit Ministry)",
+    summary: "We believe in the present work of the Holy Spirit who convicts, regenerates, indwells, sanctifies, and empowers believers for holy living and bold ministry.",
+    summaryTe: "పరిశుద్ధాత్ముడు విశ్వాసులలో నివసించి, బలపరచి, పరిశుద్ధతలో నడిపించి, పరిచర్య కొరకు వరములను అనుగ్రహించును."
+  },
+  {
+    doctrine: "Prayer & Church Ordinances",
+    doctrineTe: "ప్రార్థన మరియు సహవాసము (Prayer & Fellowship)",
+    summary: "We value regular congregational worship, weekly Bible study, monthly all-night prayer, and sacrificial fellowship as core pillars of the body of Christ.",
+    summaryTe: "సభగా కూడి ఆరాధించుట, మంగళవారపు బైబిల్ స్టడీ మరియు నెలవారీ రాత్రి ప్రార్థనలలో ఏకమనస్సుతో విజ్ఞాపన చేయుట చర్చి మూల స్థంభాలు."
+  }
+];
+
+export const CHURCH_HISTORY_MILESTONES = [
+  {
+    year: "1996",
+    title: "Humble Beginning in Kalyan Nagar",
+    titleTe: "కళ్యాణ్ నగర్‌లో ప్రారంభం",
+    description: "Started as a small prayer gathering of believers in Kalyan Nagar, Hyderabad, praying for revival and building local community fellowship.",
+    descriptionTe: "హైదరాబాద్ కళ్యాణ్ నగర్‌లో కొద్దిమంది విశ్వాసులతో ప్రార్థనా సహవాసంగా సేలెం ఫెలోషిప్ చర్చి ప్రారంభమైనది."
+  },
+  {
+    year: "2004",
+    title: "Tuesday Bible Study Tradition",
+    titleTe: "మంగళవారం బైబిల్ స్టడీ ఆరంభం",
+    description: "Inaugurated the weekly Tuesday in-depth Bible study (6:00 PM - 7:00 PM) at Kalyan Nagar to ground believers in scriptural doctrine.",
+    descriptionTe: "విశ్వాసులను వాక్యంలో బలపరచడానికి ప్రధాన శాఖలో ప్రతి మంగళవారం సాయంత్రం 6 నుండి 7 వరకు ప్రత్యేక బైబిల్ స్టడీ ప్రారంభం."
+  },
+  {
+    year: "2011",
+    title: "Alwyn Colony & Vanasthalipuram Branches",
+    titleTe: "అల్విన్ కాలనీ మరియు వనస్థలిపురం శాఖలు",
+    description: "Extended church fellowship to Kukatpally (Alwyn Colony) and Vanasthalipuram to serve local families closer to their homes.",
+    descriptionTe: "కూకట్‌పల్లి అల్విన్ కాలనీ మరియు వనస్థలిపురం ప్రాంతాలలో నివసించే విశ్వాసుల కొరకు శాఖలు ప్రారంభించబడ్డాయి."
+  },
+  {
+    year: "2018",
+    title: "Gachibowli & Paatigadda Campuses",
+    titleTe: "గచ్చిబౌలి మరియు పాటిగడ్డ శాఖల విస్తరణ",
+    description: "Planted branches in Gachibowli to minister to corporate tech workers and in Paatigadda (Begumpet) for local community fellowship.",
+    descriptionTe: "ఐటీ కారిడార్ మరియు బేగంపేట పాటిగడ్డ ప్రాంతాలలోని కుటుంబాలను కలుపుతూ ఆరాధనలు ఆరంభం."
+  },
+  {
+    year: "2026",
+    title: "6 Branches Across Hyderabad",
+    titleTe: "హైదరాబాద్ అంతటా 6 శాఖలు",
+    description: "Today, Salem Fellowship Church ministers through 6 active branches across Hyderabad with uniform 10 AM to 1 PM Sunday worship and monthly all-night prayer watches.",
+    descriptionTe: "ప్రస్తుతం కళ్యాణ్ నగర్ (ప్రధాన శాఖ), అల్విన్ కాలనీ, వనస్థలిపురం, గచ్చిబౌలి, పాటిగడ్డ, ప్రేమ్ నగర్ శాఖలలో ప్రతి ఆదివారం 10 AM – 1 PM ఆరాధనలు మరియు రాత్రి ప్రార్థనలు జరుగుతున్నాయి."
+  }
+];

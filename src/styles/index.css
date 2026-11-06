@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-radius: 0 !important;
+  }
+  
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Cinzel', 'Playfair Display', serif;
+    letter-spacing: -0.01em;
+  }
+
+  /* Custom sharp scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #141210;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #C2410C;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #D97706;
+  }
+}
+
+@layer utilities {
+  .sharp-border {
+    border: 1px solid rgba(194, 65, 12, 0.25);
+  }
+  .sharp-border-dark {
+    border: 1px solid rgba(255, 253, 249, 0.15);
+  }
+}
