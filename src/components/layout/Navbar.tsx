@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Heart, Menu, X, PhoneCall, Sun, Moon, MapPin, ChevronDown } from 'lucide-react';
+import { Heart, Menu, X, PhoneCall, Sun, Moon, MapPin, Globe, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { CHURCH_INFO } from '../../data/churchData';
 import { useLanguage } from '../../context/LanguageContext';
@@ -188,8 +188,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Desktop Right Action Controls (Balanced & Symmetrical) */}
             <div className="hidden lg:flex items-center gap-2.5 shrink-0">
-              {/* Language Switcher [ EN | తెలుగు ] */}
-              <div className="flex items-center border border-stone-300 dark:border-stone-700 p-0.5 bg-stone-100 dark:bg-stone-900">
+              {/* Language Switcher [ EN | తెలుగు ] with Globe Icon */}
+              <div className="flex items-center border border-stone-300 dark:border-stone-700 p-0.5 bg-stone-100 dark:bg-stone-900 shadow-sharp-sm">
+                <div className="pl-2 pr-1 text-stone-500 dark:text-stone-400">
+                  <Globe className="w-3.5 h-3.5 text-stone-600 dark:text-sacred-gold" />
+                </div>
                 <button
                   type="button"
                   onClick={() => setLanguage('en')}
@@ -220,7 +223,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={onToggleTheme}
                 aria-label="Toggle theme"
-                className="p-1.5 border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-stone-500 transition-colors bg-white dark:bg-stone-900"
+                className="p-2 border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-stone-500 transition-colors bg-white dark:bg-stone-900 shadow-sharp-sm"
                 title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
                 {isDarkMode ? <Sun className="w-4 h-4 text-sacred-gold" /> : <Moon className="w-4 h-4 text-stone-700" />}
@@ -240,18 +243,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Mobile / Tablet Controls (< 1024px) */}
-            {/* Responsively adapts: when enough room (>= 460px), shows Language + Theme + Hamburger. */}
+            {/* Responsively adapts: when enough room (>= 460px), shows Globe + EN/తెలుగు + Theme + Hamburger. */}
             {/* When space is tight (< 460px), Language & Theme move into the Hamburger drawer. */}
             <div className="flex lg:hidden items-center gap-1.5 shrink-0">
-              {/* Compact Language Toggle (Visible on roomy mobile/tablets >= 460px; moves to drawer on < 460px) */}
+              {/* Language Switch Button with Globe Icon & Full Telugu (Visible on roomy mobile/tablets >= 460px; moves to drawer on < 460px) */}
               <button
                 type="button"
                 onClick={() => setLanguage(language === 'en' ? 'te' : 'en')}
-                className="hidden xs:flex w-8 h-8 items-center justify-center border border-stone-300 dark:border-stone-700 bg-stone-100 dark:bg-stone-900 text-stone-900 dark:text-sacred-gold hover:border-stone-500 font-bold text-xs tracking-wider transition-colors"
+                className="hidden xs:flex h-9 items-center gap-1.5 px-2.5 border border-stone-300 dark:border-stone-700 bg-stone-100 dark:bg-stone-900 text-stone-900 dark:text-sacred-gold hover:border-stone-500 font-bold text-xs tracking-wide transition-colors shadow-sharp-sm"
                 aria-label="Toggle language"
-                title={language === 'en' ? 'Switch to తెలుగు (తె)' : 'Switch to English (EN)'}
+                title={language === 'en' ? 'Switch to తెలుగు' : 'Switch to English (EN)'}
               >
-                {language === 'en' ? 'EN' : 'తె'}
+                <Globe className="w-3.5 h-3.5 text-stone-600 dark:text-sacred-gold shrink-0" />
+                <span>{language === 'en' ? 'EN' : 'తెలుగు'}</span>
               </button>
 
               {/* Theme Toggle Button (Visible on roomy mobile/tablets >= 460px; moves to drawer on < 460px) */}
@@ -259,7 +263,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 type="button"
                 onClick={onToggleTheme}
                 aria-label="Toggle theme"
-                className="hidden xs:flex w-8 h-8 items-center justify-center border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 hover:border-stone-500 transition-colors"
+                className="hidden xs:flex w-9 h-9 items-center justify-center border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 hover:border-stone-500 transition-colors shadow-sharp-sm"
                 title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               >
                 {isDarkMode ? <Sun className="w-4 h-4 text-sacred-gold" /> : <Moon className="w-4 h-4" />}
@@ -283,18 +287,19 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-sacred-cream dark:bg-stone-900 border-b-2 border-stone-400 dark:border-stone-700 p-4 animate-in slide-in-from-top duration-200">
-            {/* Quick Preferences Bar (Language & Theme Controls - always available here, especially when hidden from top bar on narrow phones) */}
+            {/* Quick Preferences Bar (Language with Globe & Theme Controls) */}
             <div className="flex flex-col min-[380px]:flex-row items-stretch min-[380px]:items-center justify-between gap-2 p-2.5 bg-stone-100 dark:bg-stone-950 border border-stone-300 dark:border-stone-800 mb-3 text-xs">
               {/* Language Switch */}
               <div className="flex items-center justify-between min-[380px]:justify-start gap-2">
-                <span className="font-bold text-stone-600 dark:text-stone-400 uppercase text-[11px]">
-                  {language === 'en' ? 'Language:' : 'భాష:'}
-                </span>
+                <div className="flex items-center gap-1.5 font-bold text-stone-600 dark:text-stone-400 uppercase text-[11px]">
+                  <Globe className="w-3.5 h-3.5 text-stone-500 dark:text-sacred-gold shrink-0" />
+                  <span>{language === 'en' ? 'Language:' : 'భాష:'}</span>
+                </div>
                 <div className="flex items-center border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 p-0.5">
                   <button
                     type="button"
                     onClick={() => setLanguage('en')}
-                    className={`px-2 py-0.5 text-xs font-bold uppercase transition-colors ${
+                    className={`px-2.5 py-1 text-xs font-bold uppercase transition-colors ${
                       language === 'en'
                         ? 'bg-stone-900 text-white dark:bg-stone-800 dark:text-sacred-gold shadow-sharp-sm'
                         : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white'
@@ -305,7 +310,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <button
                     type="button"
                     onClick={() => setLanguage('te')}
-                    className={`px-2 py-0.5 text-xs font-bold transition-colors ${
+                    className={`px-2.5 py-1 text-xs font-bold transition-colors ${
                       language === 'te'
                         ? 'bg-stone-900 text-sacred-gold font-black dark:bg-stone-800 shadow-sharp-sm'
                         : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white'
