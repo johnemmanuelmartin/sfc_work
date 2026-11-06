@@ -252,10 +252,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setLanguage(language === 'en' ? 'te' : 'en')}
                 className="hidden xs:flex h-9 items-center gap-1.5 px-2.5 border border-stone-300 dark:border-stone-700 bg-stone-100 dark:bg-stone-900 text-stone-900 dark:text-sacred-gold hover:border-stone-500 font-bold text-xs tracking-wide transition-colors shadow-sharp-sm"
                 aria-label="Toggle language"
-                title={language === 'en' ? 'Switch to తెలుగు' : 'Switch to English (EN)'}
+                title={language === 'en' ? 'తెలుగులోకి మార్చండి (Switch to Telugu)' : 'Switch to English'}
               >
                 <Globe className="w-3.5 h-3.5 text-stone-600 dark:text-sacred-gold shrink-0" />
-                <span>{language === 'en' ? 'EN' : 'తెలుగు'}</span>
+                <span>{language === 'en' ? 'తెలుగు' : 'EN'}</span>
               </button>
 
               {/* Theme Toggle Button (Visible on roomy mobile/tablets >= 460px; moves to drawer on < 460px) */}
