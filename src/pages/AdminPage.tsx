@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SectionHeader } from '../components/ui/SectionHeader';
+import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { VideoItem, PlaylistDef } from '../types';
@@ -17,19 +17,85 @@ import {
   ListPlus, 
   Search,
   User,
-  Tag
+  Tag,
+  Lock,
+  ShieldCheck,
+  LogOut,
+  Eye,
+  EyeOff,
+  ArrowLeft
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
+  // Session-based authentication gate (persists across page transitions within browser session)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return sessionStorage.getItem('sfc_admin_session_auth') === 'true';
+  });
+  const [usernameInput, setUsernameInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [videos, setVideos] = useState<VideoItem[]>(() => videoService.getVideos());
   const [playlists, setPlaylists] = useState<PlaylistDef[]>(() => videoService.getPlaylists());
   const [featuredId, setFeaturedId] = useState<string>(() => videoService.getFeaturedVideo().id);
+  const [liveState, setLiveState] = useState(() => videoService.getLiveBroadcastState());
+  const [liveUrlInput, setLiveUrlInput] = useState('');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [editingVideo, setEditingVideo] = useState<VideoItem | null>(null);
   const [isNewVideoModalOpen, setIsNewVideoModalOpen] = useState(false);
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanUser = usernameInput.trim().toLowerCase();
+    const cleanPass = passwordInput.trim();
+
+    // Authorized credentials check
+    if (
+      (cleanUser === 'admin' || cleanUser === 'sfcadmin') &&
+      (cleanPass === 'salemfellowship' || cleanPass === 'sfc2026' || cleanPass === 'Salem@2026')
+    ) {
+      sessionStorage.setItem('sfc_admin_session_auth', 'true');
+      setIsAuthenticated(true);
+      setAuthError(null);
+    } else {
+      setAuthError('Invalid admin credentials. Please enter the authorized church administrator username and password.');
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('sfc_admin_session_auth');
+    setIsAuthenticated(false);
+    setUsernameInput('');
+    setPasswordInput('');
+  };
+
+  const handleToggleLive = () => {
+    const nextState = { ...liveState, isLive: !liveState.isLive };
+    videoService.setLiveBroadcastState(nextState);
+    setLiveState(nextState);
+    showStatus(nextState.isLive ? '🔴 Live broadcast spotlight is now LIVE!' : 'Live broadcast spotlight turned off.');
+  };
+
+  const handleUpdateLiveVideo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!liveUrlInput.trim()) return;
+    let cleanId = liveUrlInput.trim();
+    if (cleanId.includes('watch?v=')) {
+      cleanId = cleanId.split('watch?v=')[1].split('&')[0];
+    } else if (cleanId.includes('youtu.be/')) {
+      cleanId = cleanId.split('youtu.be/')[1].split('?')[0];
+    }
+    const nextState = { ...liveState, isLive: true, liveVideoId: cleanId };
+    videoService.setLiveBroadcastState(nextState);
+    setLiveState(nextState);
+    setLiveUrlInput('');
+    showStatus(`Live stream video ID set to "${cleanId}" and activated!`);
+  };
 
   // New video form
   const [videoForm, setVideoForm] = useState<Partial<VideoItem>>({
@@ -183,15 +249,171 @@ export const AdminPage: React.FC = () => {
     (v.scriptureRef && v.scriptureRef.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-sacred-cream dark:bg-sacred-obsidian flex items-center justify-center py-16 px-4">
+        <div className="w-full max-w-md bg-white dark:bg-stone-900 border-2 border-stone-300 dark:border-stone-800 p-8 shadow-sharp">
+          <div className="text-center space-y-3 mb-8">
+            <img src="/logo.png" alt={CHURCH_INFO.name} className="w-14 h-14 mx-auto object-contain" />
+            <h2 className="font-display font-bold text-lg text-stone-900 dark:text-white uppercase tracking-wider">
+              {CHURCH_INFO.name}
+            </h2>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-stone-100 dark:bg-stone-950 border border-stone-300 dark:border-stone-800 text-xs font-mono text-sacred-gold uppercase">
+              <Lock className="w-3.5 h-3.5 text-sacred-gold" />
+              <span>Media Administration Gate</span>
+            </div>
+            <p className="text-xs text-stone-600 dark:text-stone-400">
+              Please enter your administrator credentials to manage sermon tagging, playlists, and live streams.
+            </p>
+          </div>
+
+          {authError && (
+            <div className="mb-6 p-3 bg-red-950/80 border border-red-700 text-red-200 text-xs leading-relaxed">
+              {authError}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300 mb-1">
+                Admin Username
+              </label>
+              <input
+                type="text"
+                required
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
+                placeholder="e.g. admin"
+                className="w-full px-3 py-2 text-sm bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-white focus:outline-none focus:border-sacred-gold"
+                autoFocus
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300 mb-1">
+                Admin Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="Enter admin password"
+                  className="w-full px-3 py-2 pr-10 text-sm bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-white focus:outline-none focus:border-sacred-gold"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <Button type="submit" variant="primary" className="w-full py-2.5 flex items-center justify-center gap-2">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Sign In to Admin Center</span>
+            </Button>
+          </form>
+
+          <div className="mt-6 pt-6 border-t border-stone-200 dark:border-stone-800 text-center">
+            <Link to="/" className="text-xs text-stone-500 hover:text-stone-900 dark:hover:text-sacred-gold transition-colors inline-flex items-center gap-1 font-semibold">
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Return to Church Website</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-12 md:py-20 bg-sacred-cream dark:bg-sacred-obsidian min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <SectionHeader
-          eyebrow="Media Administration & Catalog Manager"
-          title="YouTube Video & Metadata Admin Center"
-          description="Manage sermon metadata (Pastors, Topics, Scripture References), assign playlists, and set the active live stream for Salem Fellowship Church."
-        />
+        {/* Top Header & Session Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-stone-300 dark:border-stone-800">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
+              <span className="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">
+                Admin Session Active
+              </span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-bold uppercase text-stone-900 dark:text-white tracking-wide mt-1">
+              Media Administration Center
+            </h1>
+            <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+              Manage sermon metadata, tag pastors, organize playlists, and control live broadcasts.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Link
+              to="/"
+              className="px-3.5 py-2 border border-stone-400 dark:border-stone-700 text-stone-800 dark:text-stone-200 hover:border-stone-600 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Exit Admin</span>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="px-3.5 py-2 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-700 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors shadow-sharp-sm"
+              title="Sign Out of Media Admin"
+            >
+              <LogOut className="w-3.5 h-3.5 text-red-300" />
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Live Broadcast Control Banner */}
+        <div className="mb-8 p-6 bg-stone-900 border-2 border-stone-800 shadow-sharp text-stone-200">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-4 border-b border-stone-800">
+            <div>
+              <div className="flex items-center gap-2">
+                <Radio className={`w-4 h-4 ${liveState.isLive ? 'text-red-500 animate-pulse' : 'text-stone-500'}`} />
+                <h3 className="font-display font-bold uppercase tracking-wider text-white text-sm">
+                  Live Broadcast Spotlight Controller
+                </h3>
+              </div>
+              <p className="text-xs text-stone-400 mt-1">
+                Toggle the website's live broadcast status and set the active livestream video link during church services.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleToggleLive}
+                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider border transition-colors flex items-center gap-2 shadow-sharp-sm ${
+                  liveState.isLive
+                    ? 'bg-red-600 border-red-500 text-white hover:bg-red-700'
+                    : 'bg-stone-800 border-stone-700 text-stone-300 hover:text-white'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${liveState.isLive ? 'bg-white animate-ping' : 'bg-stone-500'}`}></span>
+                <span>{liveState.isLive ? 'Broadcast Is LIVE (Turn Off)' : 'Broadcast Is OFFLINE (Turn On)'}</span>
+              </button>
+            </div>
+          </div>
+
+          <form onSubmit={handleUpdateLiveVideo} className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <input
+              type="text"
+              value={liveUrlInput}
+              onChange={(e) => setLiveUrlInput(e.target.value)}
+              placeholder="Paste Sunday Live YouTube Link or Video ID (e.g. https://youtube.com/watch?v=...)"
+              className="flex-1 px-3 py-2 text-xs bg-stone-950 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-sacred-gold"
+            />
+            <Button type="submit" variant="primary" size="sm" className="whitespace-nowrap flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5" />
+              <span>Update Live Video Link</span>
+            </Button>
+          </form>
+        </div>
 
         {/* Channel Info & Quick Actions Bar */}
         <div className="mb-8 p-6 bg-stone-900 border-2 border-stone-800 shadow-sharp text-stone-200 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">

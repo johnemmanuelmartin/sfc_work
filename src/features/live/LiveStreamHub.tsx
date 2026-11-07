@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { SectionHeader } from '../../components/ui/SectionHeader';
 import { Button } from '../../components/ui/Button';
 import { CHURCH_INFO } from '../../data/churchData';
 import { VideoItem, PlaylistDef } from '../../types';
 import { videoService } from '../../services/videoService';
-import { Play, Search, Calendar, User, Clock, Share2, Check, Youtube, Settings, BookOpen } from 'lucide-react';
+import { Play, Search, Calendar, User, Clock, Share2, Check, Youtube, Radio, BookOpen } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { TRANSLATIONS } from '../../data/translations';
 
@@ -16,6 +15,7 @@ export const LiveStreamHub: React.FC = () => {
   const [videos, setVideos] = useState<VideoItem[]>(() => videoService.getVideos());
   const [playlists, setPlaylists] = useState<PlaylistDef[]>(() => videoService.getPlaylists());
   const [selectedVideo, setSelectedVideo] = useState<VideoItem>(() => videoService.getFeaturedVideo());
+  const [liveState, setLiveState] = useState(() => videoService.getLiveBroadcastState());
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
@@ -24,6 +24,7 @@ export const LiveStreamHub: React.FC = () => {
   useEffect(() => {
     setVideos(videoService.getVideos());
     setPlaylists(videoService.getPlaylists());
+    setLiveState(videoService.getLiveBroadcastState());
   }, []);
 
   const filteredVideos = videos.filter((v) => {
@@ -73,28 +74,63 @@ export const LiveStreamHub: React.FC = () => {
           action={
             <div className="flex flex-wrap items-center gap-2">
               <a
+                href="https://www.youtube.com/@salemfellowshipchurch/live"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sharp-sm"
+              >
+                <Radio className="w-3.5 h-3.5 animate-pulse" />
+                <span>{language === 'en' ? 'Watch Live on YouTube' : 'యూట్యూబ్‌లో లైవ్'}</span>
+              </a>
+              <a
                 href={CHURCH_INFO.socials.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-700 hover:bg-red-800 text-white font-bold text-xs uppercase tracking-wider border border-red-600 transition-colors shadow-sharp-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-900 border border-stone-700 hover:border-stone-500 text-stone-200 font-bold text-xs uppercase tracking-wider transition-colors shadow-sharp-sm"
               >
-                <Youtube className="w-3.5 h-3.5" />
+                <Youtube className="w-3.5 h-3.5 text-red-500" />
                 <span>@salemfellowshipchurch</span>
               </a>
-              <Link
-                to="/admin"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-900 border border-stone-700 hover:border-sacred-gold text-stone-300 hover:text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sharp-sm"
-                title="Manage Videos & Tagging in Admin Center"
-              >
-                <Settings className="w-3.5 h-3.5 text-sacred-gold" />
-                <span>Admin Tagging</span>
-              </Link>
             </div>
           }
         />
 
+        {/* Live Broadcast / Service Status Bar */}
+        <div className="flex items-center justify-between px-4 py-2.5 bg-stone-900 border-x-2 border-t-2 border-stone-800 text-xs">
+          <div className="flex items-center gap-2">
+            {liveState.isLive ? (
+              <>
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                <span className="font-bold text-red-400 uppercase tracking-wider text-[11px]">
+                  {language === 'en' ? 'LIVE NOW — SUNDAY SERVICE BROADCAST' : 'ప్రత్యక్ష ప్రసారం — ఆదివారపు సజీవ ఆరాధన'}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="w-2 h-2 rounded-full bg-sacred-gold"></span>
+                <span className="font-bold text-stone-200 uppercase tracking-wider text-[11px]">
+                  {language === 'en' ? 'FEATURED SERVICE / SERMON' : 'ప్రత్యేక వాక్య సందేశం'}
+                </span>
+                <span className="text-stone-600 hidden sm:inline">•</span>
+                <span className="text-stone-400 hidden sm:inline text-[11px]">
+                  {language === 'en' ? 'Live Services: Every Sunday 10:00 AM – 01:00 PM (All Branches)' : 'ప్రత్యక్ష ప్రసారం: ప్రతి ఆదివారం ఉదయం 10:00 – మధ్యాహ్నం 1:00'}
+                </span>
+              </>
+            )}
+          </div>
+          <a
+            href="https://www.youtube.com/@salemfellowshipchurch/live"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-sacred-gold hover:underline font-bold text-[11px] uppercase tracking-wider"
+          >
+            <span>{language === 'en' ? 'Open Live Channel' : 'లైవ్ ఛానెల్'}</span>
+            <Youtube className="w-3.5 h-3.5 text-red-500" />
+          </a>
+        </div>
+
         {/* Featured Video / Main Interactive Player */}
-        <div className="mb-14 bg-stone-950 border-2 border-stone-800 shadow-sharp overflow-hidden">
+        <div className="mb-14 bg-stone-950 border-x-2 border-b-2 border-stone-800 shadow-sharp overflow-hidden">
           <div className="relative aspect-video w-full bg-stone-950">
             <iframe
               src={iframeSrc}
@@ -309,24 +345,28 @@ export const LiveStreamHub: React.FC = () => {
           </div>
         )}
 
-        {/* Admin Center Callout Banner */}
+        {/* Official YouTube Channel CTA Banner */}
         <div className="mt-12 p-6 bg-stone-100 dark:bg-stone-900 border-2 border-stone-300 dark:border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-stone-900 dark:text-white">
-              {language === 'en' ? 'Manage & Tag Channel Videos' : 'వీడియోల నిర్వహణ & ట్యాగింగ్'}
+            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-stone-900 dark:text-white flex items-center gap-2">
+              <Youtube className="w-4 h-4 text-red-600" />
+              <span>{language === 'en' ? 'Salem Fellowship Church on YouTube' : 'యూట్యూబ్‌లో సేలెం ఫెలోషిప్ చర్చి'}</span>
             </h4>
-            <p className="text-xs text-stone-600 dark:text-stone-400 mt-0.5">
+            <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
               {language === 'en'
-                ? "Tag videos with Pastors, Sermon Topics, Scripture references, add custom playlists, or set the live broadcast in the Admin Center."
-                : "పాస్టర్ల పేర్లు, వాక్య భాగాలు, కొత్త ప్లేలిస్ట్‌లను చేర్చుటకు అడ్మిన్ సెంటర్‌ను ఉపయోగించండి."}
+                ? "Subscribe to @salemfellowshipchurch for weekly Telugu worship services, 'LOCKED - IN WITH GOD' series, and special revival conventions."
+                : "వారపు ఆరాధనలు, 'లాక్డ్ - ఇన్ విత్ గాడ్' సందేశాలు మరియు ఉజ్జీవ కూటముల కొరకు మా ఛానెల్‌ను సబ్‌స్క్రైబ్ చేసుకోండి."}
             </p>
           </div>
-          <Link to="/admin">
-            <Button variant="secondary" size="sm" className="whitespace-nowrap flex items-center gap-1.5">
-              <Settings className="w-3.5 h-3.5 text-sacred-gold" />
-              <span>{language === 'en' ? 'Open Media Admin Center' : 'అడ్మిన్ సెంటర్ ఓపెన్ చేయండి'}</span>
-            </Button>
-          </Link>
+          <a
+            href={CHURCH_INFO.socials.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="whitespace-nowrap px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sharp-sm flex items-center gap-1.5 shrink-0"
+          >
+            <Youtube className="w-3.5 h-3.5" />
+            <span>{language === 'en' ? 'Visit YouTube Channel' : 'యూట్యూబ్ ఛానెల్ సందర్శించండి'}</span>
+          </a>
         </div>
 
       </div>
