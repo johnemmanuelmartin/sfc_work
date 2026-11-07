@@ -316,18 +316,22 @@ export const LiveStreamHub: React.FC = () => {
                         <Play className="w-4 h-4 fill-current ml-0.5" />
                       </div>
                     </div>
-                    <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 font-mono text-[10px] text-stone-200">
+                    <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/85 font-mono text-[10px] text-stone-200 border border-stone-800">
                       {video.duration}
                     </span>
-                    <span className="absolute top-2 left-2 px-2 py-0.5 bg-black/80 text-sacred-gold text-[10px] font-bold uppercase tracking-wider">
+                    <span className="absolute top-2 left-2 px-2 py-0.5 bg-black/85 text-sacred-gold text-[10px] font-bold uppercase tracking-wider border border-stone-800">
                       {video.category.replace('_', ' ')}
+                    </span>
+                    <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-stone-950/90 text-sacred-gold border border-stone-700 font-mono text-[11px] font-bold flex items-center gap-1 shadow">
+                      <Calendar className="w-3 h-3 text-sacred-gold" />
+                      <span>{videoDate}</span>
                     </span>
                   </div>
 
                   {/* Card Content */}
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
-                      <h4 className="font-display font-bold text-sm uppercase leading-snug line-clamp-2 text-stone-900 dark:text-white group-hover:text-sacred-gold transition-colors mb-2">
+                      <h4 className="font-display font-bold text-sm uppercase leading-snug text-stone-900 dark:text-white group-hover:text-sacred-gold transition-colors mb-2 min-h-[56px]">
                         {videoTitle}
                       </h4>
                       {video.scriptureRef && (
@@ -340,7 +344,10 @@ export const LiveStreamHub: React.FC = () => {
 
                     <div className="pt-3 border-t border-stone-200 dark:border-stone-800 text-[11px] text-stone-500 flex items-center justify-between">
                       <span className="font-medium text-stone-700 dark:text-stone-300">{videoSpeaker}</span>
-                      <span>{videoDate}</span>
+                      <div className="flex items-center gap-1 font-mono font-medium text-sacred-gold dark:text-sacred-gold">
+                        <Calendar className="w-3 h-3 text-sacred-gold" />
+                        <span>{videoDate}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

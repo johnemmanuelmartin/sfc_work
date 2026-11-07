@@ -2,10 +2,10 @@ import { VideoItem, PlaylistDef } from '../types';
 import { ARCHIVED_VIDEOS, FEATURED_LIVESTREAM, DEFAULT_PLAYLISTS } from '../data/churchData';
 
 // Versioned storage keys so any previously cached mock placeholder videos are cleanly purged
-const STORAGE_KEY_VIDEOS = 'sfc_videos_v4';
-const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v4';
-const STORAGE_KEY_FEATURED = 'sfc_featured_v4';
-const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v4';
+const STORAGE_KEY_VIDEOS = 'sfc_videos_v5';
+const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v5';
+const STORAGE_KEY_FEATURED = 'sfc_featured_v5';
+const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v5';
 
 // Known dummy / unverified video IDs to strictly reject from cache
 const BANNED_MOCK_IDS = new Set([
@@ -154,6 +154,10 @@ export const videoService = {
     localStorage.removeItem(STORAGE_KEY_FEATURED);
     localStorage.removeItem(STORAGE_KEY_LIVE_STATE);
     // Also remove legacy keys
+    localStorage.removeItem('sfc_videos_v4');
+    localStorage.removeItem('sfc_playlists_v4');
+    localStorage.removeItem('sfc_featured_v4');
+    localStorage.removeItem('sfc_live_broadcast_v4');
     localStorage.removeItem('sfc_admin_videos');
     localStorage.removeItem('sfc_admin_playlists');
     localStorage.removeItem('sfc_admin_featured_id');
