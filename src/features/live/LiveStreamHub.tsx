@@ -61,7 +61,7 @@ export const LiveStreamHub: React.FC = () => {
 
   const iframeSrc = activeVideoId === 'live_stream'
     ? `https://www.youtube.com/embed/live_stream?channel=${CHURCH_INFO.youtubeChannelId}`
-    : `https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=0&rel=0`;
+    : `https://www.youtube.com/embed/${activeVideoId}?autoplay=0&rel=0`;
 
   const externalVideoUrl = activeVideoId === 'live_stream'
     ? `https://youtube.com/channel/${CHURCH_INFO.youtubeChannelId}/live`
@@ -139,8 +139,9 @@ export const LiveStreamHub: React.FC = () => {
             <iframe
               src={iframeSrc}
               title={currentTitle}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
               className="w-full h-full border-0"
             ></iframe>
           </div>

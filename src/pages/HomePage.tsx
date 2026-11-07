@@ -49,10 +49,11 @@ export const HomePage: React.FC = () => {
           <div className="bg-stone-950 border-2 border-sacred-rust shadow-sharp overflow-hidden grid grid-cols-1 lg:grid-cols-12">
             <div className="lg:col-span-7 aspect-video bg-black relative">
               <iframe
-                src={`https://www.youtube-nocookie.com/embed/${FEATURED_LIVESTREAM.youtubeId}?autoplay=0&rel=0`}
+                src={`https://www.youtube.com/embed/${FEATURED_LIVESTREAM.youtubeId}?autoplay=0&rel=0`}
                 title={featuredTitle}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
                 className="w-full h-full border-0"
               ></iframe>
             </div>
