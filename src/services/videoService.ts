@@ -2,13 +2,23 @@ import { VideoItem, PlaylistDef } from '../types';
 import { ARCHIVED_VIDEOS, FEATURED_LIVESTREAM, DEFAULT_PLAYLISTS } from '../data/churchData';
 
 // Versioned storage keys so any previously cached mock placeholder videos are cleanly purged
-const STORAGE_KEY_VIDEOS = 'sfc_videos_v3';
-const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v3';
-const STORAGE_KEY_FEATURED = 'sfc_featured_v3';
-const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v3';
+const STORAGE_KEY_VIDEOS = 'sfc_videos_v4';
+const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v4';
+const STORAGE_KEY_FEATURED = 'sfc_featured_v4';
+const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v4';
 
-// Known dummy / mock video IDs to strictly reject from cache
-const BANNED_MOCK_IDS = new Set(['dQw4w9WgXcQ', '1y_fl8fTjH4', 'kJQP7kiw5Fk', '9bZkp7q19f0', 'L_LUpnjgPso', 'fJ9rUzIMcZQ']);
+// Known dummy / unverified video IDs to strictly reject from cache
+const BANNED_MOCK_IDS = new Set([
+  'dQw4w9WgXcQ', 
+  '1y_fl8fTjH4', 
+  'kJQP7kiw5Fk', 
+  '9bZkp7q19f0', 
+  'L_LUpnjgPso', 
+  'fJ9rUzIMcZQ',
+  '_z7jLDvaFB8',
+  'RxlP2o0vY2Y',
+  'live_stream'
+]);
 
 export interface LiveBroadcastState {
   isLive: boolean;

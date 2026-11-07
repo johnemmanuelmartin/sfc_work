@@ -90,7 +90,7 @@ export const BranchDirectory: React.FC = () => {
         </div>
 
         {/* Branches Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {filteredBranches.map((branch) => {
             const branchName = language === 'en' ? branch.name : (branch.nameTe || branch.name);
             const branchLocality = language === 'en' ? branch.locality : (branch.localityTe || branch.locality);
@@ -101,39 +101,41 @@ export const BranchDirectory: React.FC = () => {
             return (
               <div
                 key={branch.id}
-                className={`bg-white dark:bg-stone-900 border-2 transition-all flex flex-col justify-between ${
+                className={`bg-white dark:bg-stone-900 border-2 transition-all flex flex-col justify-between h-full min-h-[500px] ${
                   branch.isMainBranch
                     ? 'border-sacred-rust shadow-sharp-warm'
                     : 'border-stone-300 dark:border-stone-800 hover:border-sacred-gold shadow-sharp-sm'
                 }`}
               >
-                {/* Card Header */}
-                <div className="p-6 border-b border-stone-200 dark:border-stone-800">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 bg-sacred-rust/10 border border-sacred-rust/40 text-sacred-rust font-bold uppercase text-[10px] tracking-wider">
-                        {branchLocality}, Hyderabad
-                      </span>
-                      {branch.isMainBranch && (
-                        <span className="px-2 py-0.5 bg-sacred-gold text-stone-950 font-black uppercase text-[10px] tracking-wider">
-                          {t.branches.mainBranchBadge}
+                {/* Card Header (Standardized uniform height across all cards) */}
+                <div className="p-6 border-b border-stone-200 dark:border-stone-800 min-h-[195px] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 bg-sacred-rust/10 border border-sacred-rust/40 text-sacred-rust font-bold uppercase text-[10px] tracking-wider">
+                          {branchLocality}, Hyderabad
                         </span>
-                      )}
+                        {branch.isMainBranch && (
+                          <span className="px-2 py-0.5 bg-sacred-gold text-stone-950 font-black uppercase text-[10px] tracking-wider">
+                            {t.branches.mainBranchBadge}
+                          </span>
+                        )}
+                      </div>
+                      <Building className="w-5 h-5 text-stone-400 shrink-0" />
                     </div>
-                    <Building className="w-5 h-5 text-stone-400 shrink-0" />
+
+                    <h3 className="font-display text-xl font-bold uppercase text-stone-900 dark:text-white tracking-wide">
+                      {branchName}
+                    </h3>
+
+                    <p className="mt-2 text-xs text-stone-600 dark:text-stone-300 flex items-start gap-1.5">
+                      <MapPin className="w-4 h-4 text-sacred-rust shrink-0 mt-0.5" />
+                      <span>
+                        {branchAddress}
+                        {branchLandmark && <span className="block text-stone-500 italic mt-0.5">({branchLandmark})</span>}
+                      </span>
+                    </p>
                   </div>
-
-                  <h3 className="font-display text-xl font-bold uppercase text-stone-900 dark:text-white tracking-wide">
-                    {branchName}
-                  </h3>
-
-                  <p className="mt-2 text-xs text-stone-600 dark:text-stone-300 flex items-start gap-1.5">
-                    <MapPin className="w-4 h-4 text-sacred-rust shrink-0 mt-0.5" />
-                    <span>
-                      {branchAddress}
-                      {branchLandmark && <span className="block text-stone-500 italic mt-0.5">({branchLandmark})</span>}
-                    </span>
-                  </p>
 
                   {/* Pastor in Charge */}
                   <div className="mt-4 pt-3 border-t border-dashed border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs">
@@ -145,9 +147,9 @@ export const BranchDirectory: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Service Timetable for this branch */}
-                <div className="p-6 bg-stone-50 dark:bg-stone-950/60 flex-1 space-y-2">
-                  <span className="text-[11px] uppercase font-bold tracking-wider text-sacred-rust dark:text-sacred-gold flex items-center gap-1.5 mb-2">
+                {/* Service Timetable for this branch (Standardized to 3 slots) */}
+                <div className="p-6 bg-stone-50 dark:bg-stone-950/60 flex-1 flex flex-col justify-start gap-2.5 min-h-[225px]">
+                  <span className="text-[11px] uppercase font-bold tracking-wider text-sacred-rust dark:text-sacred-gold flex items-center gap-1.5 mb-1">
                     <Clock className="w-3.5 h-3.5" />
                     {t.branches.servicesHeading}
                   </span>
@@ -178,10 +180,30 @@ export const BranchDirectory: React.FC = () => {
                       </div>
                     );
                   })}
+
+                  {/* 3rd Slot for Branches without local in-person Bible Study */}
+                  {branch.services.length < 3 && (
+                    <div className="p-2.5 border text-xs flex items-center justify-between border-dashed border-stone-300 dark:border-stone-800 bg-white/60 dark:bg-stone-900/40 text-stone-600 dark:text-stone-400">
+                      <div>
+                        <span className="font-semibold text-stone-800 dark:text-stone-200 block">
+                          {language === 'en' ? 'Tuesday Bible Study' : 'మంగళవారం బైబిల్ స్టడీ'}
+                        </span>
+                        <span className="text-[10px] text-stone-500">
+                          {language === 'en' ? 'Live Streamed from Kalyan Nagar' : 'కళ్యాణ్ నగర్ నుండి లైవ్ ప్రసారం'}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-mono text-stone-600 dark:text-stone-400 block font-semibold">06:00 – 07:00 PM</span>
+                        <span className="px-1.5 py-0.2 bg-stone-200 dark:bg-stone-800 text-[9px] uppercase font-bold text-sacred-gold">
+                          Online Live
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Action Buttons */}
-                <div className="p-4 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex items-center gap-2">
+                <div className="p-4 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex items-center gap-2 h-16">
                   <a
                     href={`tel:${branch.pastorContact}`}
                     className="flex-1 py-2 px-2 text-center text-xs font-bold uppercase tracking-wider bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-700 flex items-center justify-center gap-1 transition-colors"

@@ -55,13 +55,17 @@ export const LiveStreamHub: React.FC = () => {
   const currentSeries = language === 'en' ? selectedVideo.series : (selectedVideo.seriesTe || selectedVideo.series);
   const currentDate = language === 'en' ? selectedVideo.date : (selectedVideo.dateTe || selectedVideo.date);
 
-  const iframeSrc = selectedVideo.youtubeId === 'live_stream'
-    ? `https://www.youtube.com/embed/live_stream?channel=${CHURCH_INFO.youtubeChannelId}`
-    : `https://www.youtube-nocookie.com/embed/${selectedVideo.youtubeId}?autoplay=0&rel=0`;
+  const activeVideoId = (liveState.isLive && liveState.liveVideoId)
+    ? liveState.liveVideoId
+    : selectedVideo.youtubeId;
 
-  const externalVideoUrl = selectedVideo.youtubeId === 'live_stream'
+  const iframeSrc = activeVideoId === 'live_stream'
+    ? `https://www.youtube.com/embed/live_stream?channel=${CHURCH_INFO.youtubeChannelId}`
+    : `https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=0&rel=0`;
+
+  const externalVideoUrl = activeVideoId === 'live_stream'
     ? `https://youtube.com/channel/${CHURCH_INFO.youtubeChannelId}/live`
-    : `https://youtube.com/watch?v=${selectedVideo.youtubeId}`;
+    : `https://youtube.com/watch?v=${activeVideoId}`;
 
   return (
     <section id="live" className="py-16 md:py-24 bg-sacred-cream dark:bg-sacred-obsidian border-b border-stone-300 dark:border-stone-800">
