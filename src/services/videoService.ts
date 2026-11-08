@@ -1,11 +1,11 @@
 import { VideoItem, PlaylistDef } from '../types';
 import { ARCHIVED_VIDEOS, FEATURED_LIVESTREAM, DEFAULT_PLAYLISTS, CHURCH_INFO } from '../data/churchData';
 
-// Versioned storage keys so any previously cached mock placeholder videos are cleanly purged
-const STORAGE_KEY_VIDEOS = 'sfc_videos_v6';
-const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v6';
-const STORAGE_KEY_FEATURED = 'sfc_featured_v6';
-const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v6';
+// Versioned storage keys so any previously cached mock placeholder videos or stale live states are cleanly purged
+const STORAGE_KEY_VIDEOS = 'sfc_videos_v7';
+const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v7';
+const STORAGE_KEY_FEATURED = 'sfc_featured_v7';
+const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v7';
 
 // Known dummy / unverified video IDs to strictly reject from cache
 const BANNED_MOCK_IDS = new Set([
@@ -24,50 +24,7 @@ export interface LiveBroadcastState {
   liveVideoId?: string;
   customLiveTitle?: string;
   broadcastType?: 'sunday' | 'bible_study' | 'prayer' | 'special';
-}
-
-/**
- * Checks if current time in Indian Standard Time (IST, UTC+5:30) falls within church live broadcast schedule:
- * - Sunday Divine Service: 09:30 AM to 01:30 PM IST
- * - Tuesday Bible Study: 05:45 PM to 07:30 PM IST
- * - Monthly All-Night Prayer: Last Saturday 10:00 PM to Sunday 05:00 AM IST
- */
-export function isCurrentlyInLiveWindow(): boolean {
-  try {
-    const now = new Date();
-    const istString = now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-    const istDate = new Date(istString);
-    const day = istDate.getDay(); // 0 = Sunday, 2 = Tuesday, 6 = Saturday
-    const hours = istDate.getHours();
-    const minutes = istDate.getMinutes();
-    const timeInMinutes = hours * 60 + minutes;
-
-    // Sunday Divine Service: 9:30 AM to 1:30 PM IST (570 to 810 mins)
-    if (day === 0 && timeInMinutes >= 570 && timeInMinutes <= 810) {
-      return true;
-    }
-    // Tuesday Bible Study: 5:45 PM to 7:30 PM IST (1065 to 1170 mins)
-    if (day === 2 && timeInMinutes >= 1065 && timeInMinutes <= 1170) {
-      return true;
-    }
-    // Monthly All-Night Prayer: Last Saturday 10:00 PM to 05:00 AM IST
-    if (day === 6 && hours >= 22) {
-      const nextWeek = new Date(istDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-      if (nextWeek.getMonth() !== istDate.getMonth()) {
-        return true;
-      }
-    }
-    if (day === 0 && hours < 5) {
-      const prevDay = new Date(istDate.getTime() - 24 * 60 * 60 * 1000);
-      const nextWeekFromPrev = new Date(prevDay.getTime() + 7 * 24 * 60 * 60 * 1000);
-      if (nextWeekFromPrev.getMonth() !== prevDay.getMonth()) {
-        return true;
-      }
-    }
-  } catch (e) {
-    console.warn('Error evaluating live service window', e);
-  }
-  return false;
+  startedAt?: number; // Timestamp when broadcast was toggled on
 }
 
 export const videoService = {
@@ -169,7 +126,8 @@ export const videoService = {
     localStorage.setItem(STORAGE_KEY_FEATURED, videoId);
   },
 
-  // Get live broadcast toggle status (checks admin manual toggle OR live schedule window)
+  // Get live broadcast toggle status (No hardcoded time series!)
+  // Live state is strictly active only when toggled on or verified active
   getLiveBroadcastState(): LiveBroadcastState {
     if (typeof window === 'undefined') return { isLive: false };
     try {
@@ -177,6 +135,12 @@ export const videoService = {
       if (stored) {
         const parsed: LiveBroadcastState = JSON.parse(stored);
         if (parsed.isLive) {
+          // Safety auto-expiration: if a stream was toggled on more than 5 hours ago, auto-reset to offline
+          const now = Date.now();
+          if (parsed.startedAt && now - parsed.startedAt > 5 * 60 * 60 * 1000) {
+            this.setLiveBroadcastState({ isLive: false });
+            return { isLive: false };
+          }
           return parsed;
         }
       }
@@ -184,26 +148,21 @@ export const videoService = {
       console.warn('Failed to load live broadcast state', e);
     }
 
-    // If not manually forced off and schedule window matches, automatically activate live stream
-    if (isCurrentlyInLiveWindow()) {
-      return {
-        isLive: true,
-        liveVideoId: 'live_stream',
-        customLiveTitle: 'SUNDAY SERVICE | SALEM FELLOWSHIP | LIVE BROADCAST',
-        broadcastType: 'sunday'
-      };
-    }
-
     return { isLive: false };
   },
 
-  // Set live broadcast state
+  // Set live broadcast state (with timestamp)
   setLiveBroadcastState(state: LiveBroadcastState): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(STORAGE_KEY_LIVE_STATE, JSON.stringify(state));
+    const enriched = {
+      ...state,
+      startedAt: state.isLive ? (state.startedAt || Date.now()) : undefined
+    };
+    localStorage.setItem(STORAGE_KEY_LIVE_STATE, JSON.stringify(enriched));
   },
 
   // Live Sync with YouTube Channel RSS Feed via public CORS proxy
+  // Note: Only updates video catalog and checks for active live markers without hardcoded clock ranges
   async syncLatestVideos(): Promise<{
     videos: VideoItem[];
     isLive: boolean;
@@ -238,7 +197,7 @@ export const videoService = {
             const title = item.title || '';
             const upperTitle = title.toUpperCase();
 
-            // Auto-categorize based on title
+            // Auto-categorize based on title keywords
             let category = 'sermons';
             if (upperTitle.includes('BIBLE STUDY') || upperTitle.includes('HOSEA')) {
               category = 'bible_study';
@@ -281,20 +240,6 @@ export const videoService = {
           }
 
           if (feedItems.length > 0) {
-            // Check if top feed item was published today or is currently live
-            const topItem = feedItems[0];
-            const now = new Date();
-            const todayStr = `${String(now.getDate()).padStart(2, '0')}`;
-            if (topItem.date.startsWith(todayStr) || isCurrentlyInLiveWindow()) {
-              isLive = true;
-              liveVideo = {
-                ...topItem,
-                isLiveStream: true,
-                date: 'LIVE NOW',
-                dateTe: 'ప్రత్యక్ష ప్రసారం'
-              };
-            }
-
             // Merge with local catalog (avoid duplicates, preserve user/seeded customizations)
             const existingIds = new Set(currentVideos.map(v => v.youtubeId));
             const newVideos = feedItems.filter(f => !existingIds.has(f.youtubeId));
@@ -322,6 +267,10 @@ export const videoService = {
     localStorage.removeItem(STORAGE_KEY_FEATURED);
     localStorage.removeItem(STORAGE_KEY_LIVE_STATE);
     // Also remove legacy keys
+    localStorage.removeItem('sfc_videos_v6');
+    localStorage.removeItem('sfc_playlists_v6');
+    localStorage.removeItem('sfc_featured_v6');
+    localStorage.removeItem('sfc_live_broadcast_v6');
     localStorage.removeItem('sfc_videos_v5');
     localStorage.removeItem('sfc_playlists_v5');
     localStorage.removeItem('sfc_featured_v5');

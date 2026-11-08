@@ -68,9 +68,11 @@ export const LiveStreamHub: React.FC = () => {
         description: 'Live broadcast from Salem Fellowship Church Kalyan Nagar Main Branch. Join us in worship, prayer, and God\'s Word.',
         descriptionTe: 'కళ్యాణ్ నగర్ ప్రధాన మందిరము నుండి ప్రత్యక్ష ప్రసారం.'
       });
+    } else {
+      setSelectedVideo(videoService.getFeaturedVideo());
     }
 
-    // Background sync with live YouTube feed via CORS-friendly service
+    // Background sync with YouTube feed to fetch fresh sermon catalog
     videoService.syncLatestVideos().then(({ videos: syncedVideos, isLive, liveVideo }) => {
       setVideos(syncedVideos);
       if (isLive) {
@@ -86,6 +88,13 @@ export const LiveStreamHub: React.FC = () => {
       setViewMode('compact');
     }
   }, []);
+
+  // Ensure active category is never 'live_now' if church is offline
+  useEffect(() => {
+    if (!liveState.isLive && selectedCategory === 'live_now') {
+      setSelectedCategory('all');
+    }
+  }, [liveState.isLive, selectedCategory]);
 
   // When active live stream is present, synthesize dedicated live video item
   const activeLiveItem: VideoItem | null = liveState.isLive
@@ -290,7 +299,7 @@ export const LiveStreamHub: React.FC = () => {
           <div className="p-6 md:p-8 bg-sacred-espresso border-t border-stone-800 text-stone-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-3xl">
               <div className="flex flex-wrap items-center gap-2">
-                {selectedVideo.isLiveStream ? (
+                {selectedVideo.isLiveStream && liveState.isLive ? (
                   <span className="px-2 py-0.5 bg-red-600 text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1">
                     <Radio className="w-3 h-3 animate-pulse" />
                     <span>Live Broadcast</span>
@@ -368,9 +377,11 @@ export const LiveStreamHub: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             
             {/* Category / Playlist Tabs in Required Strict Order */}
-            {/* Order: Live Now, All Videos, Sunday Sermons, Bible Study, Any other custom playlists */}
+            {/* Order: Live Now (strictly only when live), All Videos, Sunday Sermons, Bible Study, Any other custom playlists */}
             <div className="flex flex-wrap gap-1.5">
-              {playlists.map((pl) => {
+              {playlists
+                .filter((pl) => (pl.id === 'live_now' ? liveState.isLive : true))
+                .map((pl) => {
                 const isSelected = selectedCategory === pl.id;
                 const isLiveTab = pl.id === 'live_now';
 
@@ -481,12 +492,12 @@ export const LiveStreamHub: React.FC = () => {
         ) : viewMode === 'compact' ? (
           /* Sleek Compact List View (Drastically reduces scrolling fatigue on mobile) */
           <div className="space-y-3">
-            {displayedVideos.map((video, index) => {
+            {displayedVideos.map((video) => {
               const isPlaying = selectedVideo.id === video.id || (selectedVideo.youtubeId === video.youtubeId && video.youtubeId !== 'live_stream');
               const videoTitle = language === 'en' ? video.title : (video.titleTe || video.title);
               const videoSpeaker = language === 'en' ? video.speaker : (video.speakerTe || video.speaker);
               const videoDate = language === 'en' ? video.date : (video.dateTe || video.date);
-              const isLive = video.isLiveStream || (liveState.isLive && index === 0 && selectedCategory === 'live_now');
+              const isLive = liveState.isLive && (video.id === 'live-now-active' || video.id === 'active-live-stream' || video.isLiveStream);
 
               return (
                 <div
@@ -560,12 +571,12 @@ export const LiveStreamHub: React.FC = () => {
         ) : (
           /* Standard Multi-Column Grid View */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayedVideos.map((video, index) => {
+            {displayedVideos.map((video) => {
               const isPlaying = selectedVideo.id === video.id || (selectedVideo.youtubeId === video.youtubeId && video.youtubeId !== 'live_stream');
               const videoTitle = language === 'en' ? video.title : (video.titleTe || video.title);
               const videoSpeaker = language === 'en' ? video.speaker : (video.speakerTe || video.speaker);
               const videoDate = language === 'en' ? video.date : (video.dateTe || video.date);
-              const isLive = video.isLiveStream || (liveState.isLive && index === 0 && selectedCategory === 'live_now');
+              const isLive = liveState.isLive && (video.id === 'live-now-active' || video.id === 'active-live-stream' || video.isLiveStream);
 
               return (
                 <div

@@ -319,8 +319,8 @@ export const FEATURED_LIVESTREAM: VideoItem = {
   series: "Sunday Divine Service",
   seriesTe: "ఆదివారపు ఆరాధన",
   scriptureRef: "Hebrews 11",
-  isLiveStream: true,
-  description: "Live Sunday worship gathering from Salem Fellowship Church Kalyan Nagar Main Branch. Anointed praise & worship, corporate intercession, and exposition of God's Word.",
+  isLiveStream: false,
+  description: "Sunday worship gathering from Salem Fellowship Church Kalyan Nagar Main Branch. Anointed praise & worship, corporate intercession, and exposition of God's Word.",
   descriptionTe: "కళ్యాణ్ నగర్ ప్రధాన మందిరము నుండి ఆదివారపు ఆరాధన మరియు దేవుని వాక్య పరిచర్య."
 };
 
