@@ -35,6 +35,7 @@ export interface ChurchBranch {
 }
 
 export type VideoCategory =
+  | 'live_now'
   | 'all'
   | 'locked_in_with_god'
   | 'sermons'
