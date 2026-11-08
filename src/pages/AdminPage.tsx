@@ -4,6 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { VideoItem, PlaylistDef } from '../types';
 import { videoService } from '../services/videoService';
+import { youtubeApiService } from '../services/youtubeApiService';
 import { CHURCH_INFO, LEADERSHIP_TEAM } from '../data/churchData';
 import { 
   Plus, 
@@ -23,7 +24,9 @@ import {
   LogOut,
   Eye,
   EyeOff,
-  ArrowLeft
+  ArrowLeft,
+  Key,
+  RefreshCw
 } from 'lucide-react';
 
 export const AdminPage: React.FC = () => {
@@ -42,6 +45,9 @@ export const AdminPage: React.FC = () => {
   const [featuredId, setFeaturedId] = useState<string>(() => videoService.getFeaturedVideo().id);
   const [liveState, setLiveState] = useState(() => videoService.getLiveBroadcastState());
   const [liveUrlInput, setLiveUrlInput] = useState('');
+  const [apiKeyInput, setApiKeyInput] = useState<string>(() => youtubeApiService.getApiKey());
+  const [isTestingApi, setIsTestingApi] = useState(false);
+  const [apiTestFeedback, setApiTestFeedback] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [editingVideo, setEditingVideo] = useState<VideoItem | null>(null);
@@ -95,6 +101,34 @@ export const AdminPage: React.FC = () => {
     setLiveState(nextState);
     setLiveUrlInput('');
     showStatus(`Live stream video ID set to "${cleanId}" and activated!`);
+  };
+
+  const handleSaveApiKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    youtubeApiService.saveApiKey(apiKeyInput);
+    showStatus('Google Cloud YouTube Data API v3 key saved!');
+  };
+
+  const handleTestApiKey = async () => {
+    if (!apiKeyInput.trim()) {
+      setApiTestFeedback('Please paste your Google Cloud YouTube API key first.');
+      return;
+    }
+    youtubeApiService.saveApiKey(apiKeyInput);
+    setIsTestingApi(true);
+    setApiTestFeedback(null);
+    try {
+      const res = await youtubeApiService.checkIsChannelLive(true);
+      if (res.isLive) {
+        setApiTestFeedback(`🔴 Channel is LIVE! Current Broadcast: "${res.title}" (Video ID: ${res.videoId})`);
+      } else {
+        setApiTestFeedback('✅ API Key is Valid and connected! Channel is currently OFFLINE (no active live stream found). Automated 24/7 detection is ready.');
+      }
+    } catch (err: any) {
+      setApiTestFeedback(`❌ Connection test failed: ${err.message || 'Check key permissions or quota'}`);
+    } finally {
+      setIsTestingApi(false);
+    }
   };
 
   // New video form
@@ -412,6 +446,69 @@ export const AdminPage: React.FC = () => {
               <Check className="w-3.5 h-3.5" />
               <span>Update Live Video Link</span>
             </Button>
+          </form>
+        </div>
+
+        {/* Google Cloud YouTube Data API v3 Auto-Checker Banner */}
+        <div className="mb-8 p-6 bg-stone-900 border-2 border-stone-800 shadow-sharp text-stone-200">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-stone-800">
+            <div>
+              <div className="flex items-center gap-2">
+                <Key className="w-4 h-4 text-sacred-gold" />
+                <h3 className="font-display font-bold uppercase tracking-wider text-white text-sm">
+                  Google Cloud YouTube Data API v3 (Automated 24/7 Live Detection)
+                </h3>
+              </div>
+              <p className="text-xs text-stone-400 mt-1 max-w-2xl leading-relaxed">
+                Connect your Google Cloud API key so the website detects live broadcasts automatically whenever your church goes live on YouTube, eliminating manual media team work.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <span className={`w-2.5 h-2.5 rounded-full ${apiKeyInput.trim() ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+              <span className="text-xs font-mono font-bold uppercase text-stone-300">
+                {apiKeyInput.trim() ? 'API Connected' : 'API Key Not Set'}
+              </span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSaveApiKey} className="mt-4 space-y-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <input
+                type="password"
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+                placeholder="Paste Google Cloud YouTube Data API v3 Key (AIzaSy...)"
+                className="flex-1 px-3 py-2 text-xs font-mono bg-stone-950 border border-stone-700 text-white placeholder-stone-500 focus:outline-none focus:border-sacred-gold"
+              />
+              <Button type="submit" variant="primary" size="sm" className="whitespace-nowrap flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5" />
+                <span>Save API Key</span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleTestApiKey}
+                disabled={isTestingApi}
+                className="whitespace-nowrap border-stone-700 text-stone-300 hover:text-white flex items-center gap-1.5"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isTestingApi ? 'animate-spin' : ''}`} />
+                <span>{isTestingApi ? 'Testing...' : 'Test Connection'}</span>
+              </Button>
+            </div>
+
+            {apiTestFeedback && (
+              <div className="p-3 bg-stone-950 border border-stone-800 text-xs font-mono text-stone-300 leading-relaxed">
+                {apiTestFeedback}
+              </div>
+            )}
+
+            <div className="text-[11px] text-stone-500 space-y-1 pt-1">
+              <p>
+                💡 <strong className="text-stone-400">Google Cloud Free Tier:</strong> Free quota provides 10,000 units/day. Live search costs 100 units (up to 100 automatic live checks daily). Results are cached for 3 minutes to preserve quota.
+              </p>
+            </div>
           </form>
         </div>
 

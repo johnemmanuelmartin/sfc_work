@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/Button';
 import { CHURCH_INFO } from '../../data/churchData';
 import { VideoItem, PlaylistDef } from '../../types';
 import { videoService } from '../../services/videoService';
+import { youtubeApiService } from '../../services/youtubeApiService';
 import { 
   Play, 
   Search, 
@@ -17,7 +18,8 @@ import {
   BookOpen, 
   List, 
   LayoutGrid, 
-  ChevronDown 
+  ChevronDown,
+  Loader2
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { TRANSLATIONS } from '../../data/translations';
@@ -34,6 +36,10 @@ export const LiveStreamHub: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
   
+  // Dynamic cache for videos loaded from actual YouTube playlists
+  const [playlistVideosMap, setPlaylistVideosMap] = useState<Record<string, VideoItem[]>>({});
+  const [isLoadingPlaylist, setIsLoadingPlaylist] = useState<boolean>(false);
+
   // Mobile-responsive display controls
   const [viewMode, setViewMode] = useState<'compact' | 'grid'>('grid');
   const [mobileExpanded, setMobileExpanded] = useState<boolean>(false);
@@ -116,22 +122,33 @@ export const LiveStreamHub: React.FC = () => {
       }
     : null;
 
-  // Filter videos according to user-selected tab
+  // Fetch videos directly from YouTube Playlist when user selects a playlist tab
+  useEffect(() => {
+    if (selectedCategory === 'all' || selectedCategory === 'live_now') return;
+
+    const currentPl = playlists.find(p => p.id === selectedCategory);
+    const ytPlId = currentPl?.youtubePlaylistId;
+
+    if (ytPlId && !playlistVideosMap[selectedCategory]) {
+      setIsLoadingPlaylist(true);
+      youtubeApiService.fetchPlaylistVideos(ytPlId, 9)
+        .then(items => {
+          if (items && items.length > 0) {
+            setPlaylistVideosMap(prev => ({ ...prev, [selectedCategory]: items }));
+          }
+        })
+        .finally(() => setIsLoadingPlaylist(false));
+    }
+  }, [selectedCategory, playlists, playlistVideosMap]);
+
+  // Filter videos according to user-selected tab:
+  // Only 'All Videos' and 'Live Now' show items automatically.
+  // Rest of the filters show directly from the playlists over at YouTube.
   let categorizedVideos: VideoItem[] = [];
 
   if (selectedCategory === 'live_now') {
-    // Live Now: Show active live stream first, plus recent live services
-    const liveList = activeLiveItem ? [activeLiveItem] : [];
-    const pastLive = videos.filter(v => 
-      v.isLiveStream || 
-      v.category === 'sermons' || 
-      v.title.toUpperCase().includes('SUNDAY') ||
-      v.title.toUpperCase().includes('BIBLE STUDY')
-    );
-    const filteredPast = activeLiveItem && activeLiveItem.youtubeId !== 'live_stream'
-      ? pastLive.filter(v => v.youtubeId !== activeLiveItem.youtubeId)
-      : pastLive;
-    categorizedVideos = [...liveList, ...filteredPast];
+    // Live Now: Strictly shows the active live stream
+    categorizedVideos = activeLiveItem ? [activeLiveItem] : [];
   } else if (selectedCategory === 'all') {
     // All Videos: Any live stream at the very top, followed by 15 videos by date/time
     const base = activeLiveItem ? [activeLiveItem] : [];
@@ -139,35 +156,21 @@ export const LiveStreamHub: React.FC = () => {
       ? videos.filter(v => v.youtubeId !== activeLiveItem.youtubeId)
       : videos;
     categorizedVideos = [...base, ...rest];
-  } else if (selectedCategory === 'sermons') {
-    // Sunday Sermons: Live video if active, then Sunday sermons sorted by date
-    const sundayMatches = videos.filter(v => v.category === 'sermons' || v.title.toUpperCase().includes('SUNDAY'));
-    if (activeLiveItem && (liveState.broadcastType === 'sunday' || activeLiveItem.category === 'sermons')) {
-      const filteredSunday = activeLiveItem.youtubeId !== 'live_stream'
-        ? sundayMatches.filter(v => v.youtubeId !== activeLiveItem.youtubeId)
-        : sundayMatches;
-      categorizedVideos = [activeLiveItem, ...filteredSunday];
-    } else {
-      categorizedVideos = sundayMatches;
-    }
-  } else if (selectedCategory === 'bible_study') {
-    // Bible Study: Live video if active, then all Bible Study sessions
-    const bibleMatches = videos.filter(v => 
-      v.category === 'bible_study' || 
-      v.title.toUpperCase().includes('BIBLE STUDY') || 
-      v.title.toUpperCase().includes('HOSEA')
-    );
-    if (activeLiveItem && (liveState.broadcastType === 'bible_study' || activeLiveItem.category === 'bible_study')) {
-      const filteredBible = activeLiveItem.youtubeId !== 'live_stream'
-        ? bibleMatches.filter(v => v.youtubeId !== activeLiveItem.youtubeId)
-        : bibleMatches;
-      categorizedVideos = [activeLiveItem, ...filteredBible];
-    } else {
-      categorizedVideos = bibleMatches;
-    }
   } else {
-    // Other playlists (locked_in_with_god, worship, special, youth, custom)
-    categorizedVideos = videos.filter(v => v.category === selectedCategory);
+    // Rest of filters show directly from YouTube playlists:
+    const currentPl = playlists.find(p => p.id === selectedCategory);
+    const ytPlId = currentPl?.youtubePlaylistId;
+
+    if (playlistVideosMap[selectedCategory] && playlistVideosMap[selectedCategory].length > 0) {
+      // Direct live videos from YouTube Playlist
+      categorizedVideos = playlistVideosMap[selectedCategory];
+    } else if (ytPlId && selectedCategory === 'locked_in_with_god') {
+      // Verified seeded sessions from Locked - In With God YouTube playlist
+      categorizedVideos = videos.filter(v => v.category === 'locked_in_with_god');
+    } else {
+      // No playlist exists on YouTube or no videos in it -> empty array (triggers empty state)
+      categorizedVideos = [];
+    }
   }
 
   // Search filtering
@@ -459,8 +462,15 @@ export const LiveStreamHub: React.FC = () => {
           </div>
         </div>
 
-        {/* Empty Category Notice */}
-        {filteredVideos.length === 0 ? (
+        {/* Loading Playlist from YouTube Indicator */}
+        {isLoadingPlaylist ? (
+          <div className="p-12 bg-white dark:bg-stone-900 border-2 border-stone-300 dark:border-stone-800 text-center space-y-3 shadow-sharp-sm my-6">
+            <Loader2 className="w-8 h-8 mx-auto text-sacred-gold animate-spin" />
+            <h4 className="font-display text-sm font-bold uppercase tracking-wider text-stone-900 dark:text-white">
+              {language === 'en' ? 'Fetching Videos from YouTube Playlist...' : 'యూట్యూబ్ ప్లేలిస్ట్ నుండి వీడియోలు లోడ్ అవుతున్నాయి...'}
+            </h4>
+          </div>
+        ) : filteredVideos.length === 0 ? (
           <div className="p-8 bg-white dark:bg-stone-900 border-2 border-stone-300 dark:border-stone-800 text-center space-y-4 shadow-sharp-sm my-6">
             <Youtube className="w-10 h-10 mx-auto text-stone-400" />
             <h4 className="font-display text-lg font-bold uppercase text-stone-900 dark:text-white">

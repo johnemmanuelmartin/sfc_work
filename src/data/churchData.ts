@@ -295,12 +295,9 @@ export const CHURCH_BRANCHES: ChurchBranch[] = [
 export const DEFAULT_PLAYLISTS: PlaylistDef[] = [
   { id: 'live_now', nameEn: 'Live Now', nameTe: 'లైవ్' },
   { id: 'all', nameEn: 'All Videos', nameTe: 'అన్ని వీడియోలు' },
-  { id: 'sermons', nameEn: 'Sunday Sermons', nameTe: 'ఆదివారపు వాక్యములు' },
-  { id: 'bible_study', nameEn: 'Bible Study', nameTe: 'బైబిల్ స్టడీ' },
-  { id: 'locked_in_with_god', nameEn: 'Locked - In With God', nameTe: 'లాక్డ్ - ఇన్ విత్ గాడ్' },
-  { id: 'worship', nameEn: 'Telugu Worship', nameTe: 'తెలుగు ఆరాధన' },
-  { id: 'special', nameEn: 'All-Night Prayer', nameTe: 'రాత్రి ప్రార్థనలు' },
-  { id: 'youth', nameEn: 'Youth Fellowship', nameTe: 'యూత్ కూటములు' },
+  { id: 'sermons', nameEn: 'Sunday Sermons', nameTe: 'ఆదివారపు వాక్యములు', youtubePlaylistId: '' },
+  { id: 'bible_study', nameEn: 'Bible Study', nameTe: 'బైబిల్ స్టడీ', youtubePlaylistId: '' },
+  { id: 'locked_in_with_god', nameEn: 'Locked - In With God', nameTe: 'లాక్డ్ - ఇన్ విత్ గాడ్', youtubePlaylistId: 'PL1VI4g-eqBnYwwwmnlf4njHPO8VrqRdkN' },
 ];
 
 export const FEATURED_LIVESTREAM: VideoItem = {

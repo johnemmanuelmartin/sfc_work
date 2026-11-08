@@ -1,11 +1,12 @@
 import { VideoItem, PlaylistDef } from '../types';
 import { ARCHIVED_VIDEOS, FEATURED_LIVESTREAM, DEFAULT_PLAYLISTS, CHURCH_INFO } from '../data/churchData';
+import { youtubeApiService } from './youtubeApiService';
 
 // Versioned storage keys so any previously cached mock placeholder videos or stale live states are cleanly purged
-const STORAGE_KEY_VIDEOS = 'sfc_videos_v7';
-const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v7';
-const STORAGE_KEY_FEATURED = 'sfc_featured_v7';
-const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v7';
+const STORAGE_KEY_VIDEOS = 'sfc_videos_v8';
+const STORAGE_KEY_PLAYLISTS = 'sfc_playlists_v8';
+const STORAGE_KEY_FEATURED = 'sfc_featured_v8';
+const STORAGE_KEY_LIVE_STATE = 'sfc_live_broadcast_v8';
 
 // Known dummy / unverified video IDs to strictly reject from cache
 const BANNED_MOCK_IDS = new Set([
@@ -18,6 +19,9 @@ const BANNED_MOCK_IDS = new Set([
   '_z7jLDvaFB8',
   'RxlP2o0vY2Y'
 ]);
+
+// Playlists that should never be shown unless explicitly created on YouTube
+const BANNED_CATEGORY_IDS = new Set(['worship', 'special', 'youth']);
 
 export interface LiveBroadcastState {
   isLive: boolean;
@@ -34,7 +38,16 @@ export const videoService = {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_PLAYLISTS);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed: PlaylistDef[] = JSON.parse(stored);
+        // Clean out any obsolete unmentioned categories from previous versions
+        const cleaned = parsed.filter(p => !BANNED_CATEGORY_IDS.has(p.id));
+        // Ensure locked_in_with_god always has its verified YouTube playlist ID
+        return cleaned.map(p => {
+          if (p.id === 'locked_in_with_god' && !p.youtubePlaylistId) {
+            return { ...p, youtubePlaylistId: 'PL1VI4g-eqBnYwwwmnlf4njHPO8VrqRdkN' };
+          }
+          return p;
+        });
       }
     } catch (e) {
       console.warn('Failed to parse playlists from localStorage', e);
@@ -161,18 +174,72 @@ export const videoService = {
     localStorage.setItem(STORAGE_KEY_LIVE_STATE, JSON.stringify(enriched));
   },
 
-  // Live Sync with YouTube Channel RSS Feed via public CORS proxy
-  // Note: Only updates video catalog and checks for active live markers without hardcoded clock ranges
+  // Live Sync with YouTube Data API v3 or fallback RSS Feed
+  // Only populates 'All Videos' and detects active Live broadcasts
+  // All other playlist filters show directly from actual YouTube playlists
   async syncLatestVideos(): Promise<{
     videos: VideoItem[];
     isLive: boolean;
     liveVideo?: VideoItem;
   }> {
-    const currentVideos = this.getVideos();
+    let currentVideos = this.getVideos();
     const liveState = this.getLiveBroadcastState();
     let isLive = liveState.isLive;
     let liveVideo: VideoItem | undefined;
 
+    // 1. If Google Cloud YouTube Data API v3 key is provided, perform automated live check & upload sync
+    if (youtubeApiService.hasApiKey()) {
+      try {
+        const liveCheck = await youtubeApiService.checkIsChannelLive();
+        if (liveCheck.isLive && liveCheck.videoId) {
+          isLive = true;
+          liveVideo = {
+            id: `yt-live-${liveCheck.videoId}`,
+            title: liveCheck.title || 'SUNDAY SERVICE | SALEM FELLOWSHIP | LIVE BROADCAST',
+            titleTe: 'సేలెం ఫెలోషిప్ చర్చి — ప్రత్యక్ష ప్రసారం',
+            youtubeId: liveCheck.videoId,
+            category: 'all',
+            speaker: 'Pastor P. David Paul',
+            speakerTe: 'పాస్టర్ పి. డేవిడ్ పాల్',
+            date: 'LIVE NOW',
+            dateTe: 'ప్రత్యక్ష ప్రసారం',
+            duration: 'LIVE',
+            language: 'Telugu',
+            isLiveStream: true,
+            description: liveCheck.description || 'Live broadcast from Salem Fellowship Church Kalyan Nagar Main Branch.',
+            descriptionTe: 'కళ్యాణ్ నగర్ ప్రధాన మందిరము నుండి ప్రత్యక్ష ప్రసారం.'
+          };
+
+          this.setLiveBroadcastState({
+            isLive: true,
+            liveVideoId: liveCheck.videoId,
+            customLiveTitle: liveCheck.title,
+            startedAt: Date.now()
+          });
+        } else if (!liveCheck.isLive && liveState.isLive) {
+          // Channel is confirmed offline via Google Cloud API
+          this.setLiveBroadcastState({ isLive: false });
+          isLive = false;
+        }
+
+        // Fetch latest uploaded videos directly from YouTube Channel Uploads playlist
+        const apiVideos = await youtubeApiService.fetchChannelUploads(15);
+        if (apiVideos.length > 0) {
+          const existingIds = new Set(currentVideos.map(v => v.youtubeId));
+          const newVideos = apiVideos.filter(f => !existingIds.has(f.youtubeId));
+          if (newVideos.length > 0) {
+            const merged = [...newVideos, ...currentVideos];
+            this.saveVideos(merged);
+            currentVideos = merged;
+          }
+          return { videos: currentVideos, isLive, liveVideo };
+        }
+      } catch (err) {
+        console.warn('YouTube Data API sync error, falling back to RSS feed', err);
+      }
+    }
+
+    // 2. Fallback: Public Channel RSS Feed (Strictly for 'All Videos', no auto-categorization!)
     try {
       const feedUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(
         `https://www.youtube.com/feeds/videos.xml?channel_id=${CHURCH_INFO.youtubeChannelId}`
@@ -195,21 +262,6 @@ export const videoService = {
             if (!ytId || BANNED_MOCK_IDS.has(ytId)) continue;
 
             const title = item.title || '';
-            const upperTitle = title.toUpperCase();
-
-            // Auto-categorize based on title keywords
-            let category = 'sermons';
-            if (upperTitle.includes('BIBLE STUDY') || upperTitle.includes('HOSEA')) {
-              category = 'bible_study';
-            } else if (upperTitle.includes('YOUTH') || upperTitle.includes('REDEEMED')) {
-              category = 'youth';
-            } else if (upperTitle.includes('REVIVAL') || upperTitle.includes('PRAYER')) {
-              category = 'special';
-            } else if (upperTitle.includes('LOCKED')) {
-              category = 'locked_in_with_god';
-            } else if (upperTitle.includes('WORSHIP')) {
-              category = 'worship';
-            }
 
             // Format date
             let formattedDate = 'Recent Broadcast';
@@ -222,12 +274,13 @@ export const videoService = {
               }
             }
 
+            // General channel uploads belong to 'all' — no heuristic guessing of categories!
             feedItems.push({
               id: `yt-${ytId}`,
               title: title,
               titleTe: title,
               youtubeId: ytId,
-              category,
+              category: 'all',
               speaker: 'Pastor P. David Paul',
               speakerTe: 'పాస్టర్ పి. డేవిడ్ పాల్',
               date: formattedDate,
@@ -240,7 +293,6 @@ export const videoService = {
           }
 
           if (feedItems.length > 0) {
-            // Merge with local catalog (avoid duplicates, preserve user/seeded customizations)
             const existingIds = new Set(currentVideos.map(v => v.youtubeId));
             const newVideos = feedItems.filter(f => !existingIds.has(f.youtubeId));
 
@@ -267,6 +319,10 @@ export const videoService = {
     localStorage.removeItem(STORAGE_KEY_FEATURED);
     localStorage.removeItem(STORAGE_KEY_LIVE_STATE);
     // Also remove legacy keys
+    localStorage.removeItem('sfc_videos_v7');
+    localStorage.removeItem('sfc_playlists_v7');
+    localStorage.removeItem('sfc_featured_v7');
+    localStorage.removeItem('sfc_live_broadcast_v7');
     localStorage.removeItem('sfc_videos_v6');
     localStorage.removeItem('sfc_playlists_v6');
     localStorage.removeItem('sfc_featured_v6');
